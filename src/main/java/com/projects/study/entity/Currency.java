@@ -1,10 +1,10 @@
 package com.projects.study.entity;
 
 public class Currency {
-    private final long id;
-    private final String code;
-    private final String fullName;
-    private final String sign;
+    private long id;
+    private String code;
+    private String fullName;
+    private String sign;
 
     public Currency(long id, String code, String fullName, String sign) {
         this.id = id;
@@ -27,5 +27,17 @@ public class Currency {
 
     public String getSign() {
         return sign;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
     }
 }
