@@ -20,7 +20,7 @@ public class ExchangeRateDAO implements DAO<ExchangeRate> {
     }
 
     @Override
-    public Optional<ExchangeRate> get(long id) {
+    public Optional<ExchangeRate> getById(long id) {
         return Optional.empty();
     }
 

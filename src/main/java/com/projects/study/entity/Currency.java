@@ -13,6 +13,9 @@ public class Currency {
         this.sign = sign;
     }
 
+    public Currency() {
+    }
+
     public long getId() {
         return id;
     }
@@ -23,6 +26,10 @@ public class Currency {
 
     public String getFullName() {
         return fullName;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getSign() {
@@ -39,5 +46,13 @@ public class Currency {
 
     public void setSign(String sign) {
         this.sign = sign;
+    }
+
+    @Override
+    public String toString() {
+        return "Currency{" + "id=" + id
+                + ", code='" + code + '\''
+                + ", fullName='" + fullName + '\''
+                + ", sign='" + sign + '\'' + '}';
     }
 }
