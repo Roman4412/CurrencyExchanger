@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet("/currencies")
-public class CurrencyServlet extends HttpServlet {
+public class CurrenciesServlet extends HttpServlet {
     private final DAO<Currency> currencyDAO = CurrencyDAO.getInstance();
     private final CurrencyService currencyService = new CurrencyService(currencyDAO);
 
