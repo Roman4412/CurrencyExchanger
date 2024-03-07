@@ -17,7 +17,7 @@ public class CurrencyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         PrintWriter writer = resp.getWriter();
-        writer.println(currencyDAO.getAll());
+        writer.println(currencyDAO.getById(1));
     }
 
     @Override

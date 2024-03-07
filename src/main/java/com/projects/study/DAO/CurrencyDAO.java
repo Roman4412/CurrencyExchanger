@@ -33,10 +33,10 @@ public class CurrencyDAO implements DAO<Currency> {
         Currency currency = null;
 
         try (Connection connection = DbConnectionProvider.get();
-             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_ID);
-             ResultSet resultSet = pStmt.executeQuery();) {
+             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_ID);) {
 
             pStmt.setLong(1, id);
+            ResultSet resultSet = pStmt.executeQuery();
 
             while (resultSet.next()) {
                 currency = new Currency();
