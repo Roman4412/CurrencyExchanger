@@ -11,15 +11,15 @@ import java.util.Optional;
 import static com.projects.study.constant.ColumnLabels.*;
 import static com.projects.study.constant.SqlQueryConstants.*;
 
-public class CurrencyDAO implements DAO<Currency> {
-    private static CurrencyDAO currencyDAO;
+public class CurrencyDao implements Dao<Currency> {
+    private static CurrencyDao currencyDAO;
 
-    private CurrencyDAO() {
+    private CurrencyDao() {
     }
 
-    public static CurrencyDAO getInstance() {
+    public static CurrencyDao getInstance() {
         if (currencyDAO == null) {
-            currencyDAO = new CurrencyDAO();
+            currencyDAO = new CurrencyDao();
         }
         return currencyDAO;
     }
@@ -33,7 +33,7 @@ public class CurrencyDAO implements DAO<Currency> {
         Currency currency = null;
 
         try (Connection connection = DbConnectionProvider.get();
-             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_ID);) {
+             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_ID)) {
 
             pStmt.setLong(1, id);
             ResultSet resultSet = pStmt.executeQuery();
@@ -58,7 +58,7 @@ public class CurrencyDAO implements DAO<Currency> {
 
         try (Connection connection = DbConnectionProvider.get();
              Statement stmt = connection.createStatement();
-             ResultSet resultSet = stmt.executeQuery(CUR_GET_ALL);) {
+             ResultSet resultSet = stmt.executeQuery(CUR_GET_ALL)) {
 
             while (resultSet.next()) {
                 Currency currency = new Currency();

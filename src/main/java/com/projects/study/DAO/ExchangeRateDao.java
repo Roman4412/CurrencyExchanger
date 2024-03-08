@@ -5,16 +5,16 @@ import com.projects.study.entity.ExchangeRate;
 import java.util.List;
 import java.util.Optional;
 
-public class ExchangeRateDAO implements DAO<ExchangeRate> {
+public class ExchangeRateDao implements Dao<ExchangeRate> {
 
-    private static ExchangeRateDAO exchangeRateDAO;
+    private static ExchangeRateDao exchangeRateDAO;
 
-    private ExchangeRateDAO() {
+    private ExchangeRateDao() {
     }
 
-    public static ExchangeRateDAO getInstance() {
+    public static ExchangeRateDao getInstance() {
         if (exchangeRateDAO == null) {
-            exchangeRateDAO = new ExchangeRateDAO();
+            exchangeRateDAO = new ExchangeRateDao();
         }
         return exchangeRateDAO;
     }

@@ -1,8 +1,8 @@
 package com.projects.study.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.projects.study.DAO.CurrencyDAO;
-import com.projects.study.DAO.DAO;
+import com.projects.study.DAO.CurrencyDao;
+import com.projects.study.DAO.Dao;
 import com.projects.study.entity.Currency;
 import com.projects.study.service.CurrencyService;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,8 +17,8 @@ import java.util.List;
 
 @WebServlet("/currencies")
 public class CurrenciesServlet extends HttpServlet {
-    private final DAO<Currency> currencyDAO = CurrencyDAO.getInstance();
-    private final CurrencyService currencyService = new CurrencyService(currencyDAO);
+    private final Dao<Currency> currencyDao = CurrencyDao.getInstance();
+    private final CurrencyService currencyService = new CurrencyService(currencyDao);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
