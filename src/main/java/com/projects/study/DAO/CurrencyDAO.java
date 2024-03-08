@@ -53,7 +53,7 @@ public class CurrencyDAO implements DAO<Currency> {
     }
 
     @Override
-    public List<Currency> getAll() {
+    public List<Currency> getAll() throws SQLException {
         List<Currency> currencies = new ArrayList<>();
 
         try (Connection connection = DbConnectionProvider.get();
@@ -68,8 +68,6 @@ public class CurrencyDAO implements DAO<Currency> {
                 currency.setSign(resultSet.getString(CUR_SIGN));
                 currencies.add(currency);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
 
         return currencies;

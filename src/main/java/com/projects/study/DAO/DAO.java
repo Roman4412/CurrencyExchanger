@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface DAO <T> {
     Optional<T> getById(long id) throws SQLException;
 
-    List<T> getAll();
+    List<T> getAll() throws SQLException;
 
     void save(T t);
 

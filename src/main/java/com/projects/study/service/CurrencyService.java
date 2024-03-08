@@ -3,6 +3,7 @@ package com.projects.study.service;
 import com.projects.study.DAO.DAO;
 import com.projects.study.entity.Currency;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class CurrencyService {
@@ -12,9 +13,8 @@ public class CurrencyService {
         this.dao = dao;
     }
 
-    public List<Currency> getAll() {
+    public List<Currency> getAll() throws SQLException {
         return dao.getAll();
     }
-
 
 }
