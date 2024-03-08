@@ -22,16 +22,19 @@ public class CurrenciesServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF8");
+
         PrintWriter writer = null;
         try {
-            writer = resp.getWriter();
-            resp.setContentType("application/json");
             List<Currency> currencies = currencyService.getAll();
+            writer = resp.getWriter();
             ObjectMapper objectMapper = new ObjectMapper();
             writer.println(objectMapper.writeValueAsString(currencies));
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (SQLException e) {
             e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } finally {
             if ((writer != null)) {
