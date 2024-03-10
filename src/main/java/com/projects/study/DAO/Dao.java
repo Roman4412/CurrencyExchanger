@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface Dao<T> {
-    Optional<T> getById(long id) throws SQLException;
+    Optional<T> getByCode(String code);
 
     List<T> getAll() throws SQLException;
 
     void save(T t);
 
     void delete(long id);
+
 }

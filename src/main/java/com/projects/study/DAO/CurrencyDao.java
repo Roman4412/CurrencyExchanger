@@ -25,17 +25,13 @@ public class CurrencyDao implements Dao<Currency> {
     }
 
     @Override
-    public Optional<Currency> getById(long id) {
-        if (id < 0 || id == 0) {
-            throw new IllegalArgumentException("value is out of range");
-        }
-
+    public Optional<Currency> getByCode(String code) {
         Currency currency = null;
 
         try (Connection connection = DbConnectionProvider.get();
-             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_ID)) {
+             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_CODE)) {
 
-            pStmt.setLong(1, id);
+            pStmt.setString(1, code);
             ResultSet resultSet = pStmt.executeQuery();
 
             while (resultSet.next()) {
@@ -46,6 +42,7 @@ public class CurrencyDao implements Dao<Currency> {
                 currency.setSign(resultSet.getString(CUR_SIGN));
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
 
@@ -55,7 +52,6 @@ public class CurrencyDao implements Dao<Currency> {
     @Override
     public List<Currency> getAll() throws SQLException {
         List<Currency> currencies = new ArrayList<>();
-
         try (Connection connection = DbConnectionProvider.get();
              Statement stmt = connection.createStatement();
              ResultSet resultSet = stmt.executeQuery(CUR_GET_ALL)) {

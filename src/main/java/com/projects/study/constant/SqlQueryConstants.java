@@ -1,10 +1,10 @@
 package com.projects.study.constant;
 
 public class SqlQueryConstants {
-    public static final String CUR_GET_BY_ID = """
+    public static final String CUR_GET_BY_CODE = """
             SELECT *
             FROM currencies
-            WHERE id == ?
+            WHERE code LIKE ?
             """;
     public static final String CUR_GET_ALL = """
             SELECT *
