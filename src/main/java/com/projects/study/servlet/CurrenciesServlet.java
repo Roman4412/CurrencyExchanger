@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/currencies")
@@ -25,22 +24,10 @@ public class CurrenciesServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF8");
 
-        PrintWriter writer = null;
-        try {
-            List<Currency> currencies = currencyService.getAll();
-            writer = resp.getWriter();
-            ObjectMapper objectMapper = new ObjectMapper();
-            writer.println(objectMapper.writeValueAsString(currencies));
-            resp.setStatus(HttpServletResponse.SC_OK);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        } finally {
-            if ((writer != null)) {
-                writer.close();
-            }
-        }
+        PrintWriter writer = resp.getWriter();
+        List<Currency> currencies = currencyService.getAll();
+        ObjectMapper objectMapper = new ObjectMapper();
+        writer.println(objectMapper.writeValueAsString(currencies));
     }
 
 }
