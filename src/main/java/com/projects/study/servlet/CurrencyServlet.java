@@ -26,16 +26,18 @@ public class CurrencyServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF8");
 
         String curCode = req.getPathInfo().substring(1);
-        Optional<Currency> currencyOpt = currencyService.getCurrencyByCode(curCode);
-
-        PrintWriter writer = resp.getWriter();
-
-        if (currencyOpt.isPresent()) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            writer.println(objectMapper.writeValueAsString(currencyOpt.get()));
-            writer.close();
+        if (curCode.isEmpty()) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            Optional<Currency> currencyOpt = currencyService.getCurrencyByCode(curCode);
+            if (currencyOpt.isPresent()) {
+                PrintWriter writer = resp.getWriter();
+                ObjectMapper objectMapper = new ObjectMapper();
+                writer.println(objectMapper.writeValueAsString(currencyOpt.get()));
+                writer.close();
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
         }
     }
 
