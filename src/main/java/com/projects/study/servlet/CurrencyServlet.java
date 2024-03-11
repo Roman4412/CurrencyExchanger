@@ -19,6 +19,7 @@ import java.util.Optional;
 public class CurrencyServlet extends HttpServlet {
     private final Dao<Currency> currencyDao = CurrencyDao.getInstance();
     private final CurrencyService currencyService = new CurrencyService(currencyDao);
+    private final ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -26,14 +27,13 @@ public class CurrencyServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF8");
 
         String curCode = req.getPathInfo().substring(1);
-        if (curCode.isEmpty()) {
+        if (curCode.isBlank()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
             Optional<Currency> currencyOpt = currencyService.getCurrencyByCode(curCode);
             if (currencyOpt.isPresent()) {
                 PrintWriter writer = resp.getWriter();
-                ObjectMapper objectMapper = new ObjectMapper();
-                writer.println(objectMapper.writeValueAsString(currencyOpt.get()));
+                writer.println(jsonMapper.writeValueAsString(currencyOpt.get()));
                 writer.close();
             } else {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -43,8 +43,8 @@ public class CurrencyServlet extends HttpServlet {
 
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
     }
 
     @Override

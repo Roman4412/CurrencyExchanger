@@ -21,4 +21,11 @@ public class CurrencyService {
         return dao.getByCode(code);
     }
 
+    public Optional<Currency> saveCurrency(Currency currency) {
+        if (getCurrencyByCode(currency.getCode()).isPresent()) {
+            return Optional.empty();
+        }
+        return dao.save(currency);
+    }
+
 }

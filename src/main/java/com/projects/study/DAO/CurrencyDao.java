@@ -75,7 +75,19 @@ public class CurrencyDao implements Dao<Currency> {
 
     @Override
     public Optional<Currency> save(Currency currency) {
-        return Optional.ofNullable(new Currency());
+        Currency newCurrency = currency;
+        try (Connection connection = DbConnectionProvider.get();
+             PreparedStatement pStmt = connection.prepareStatement(CUR_SAVE)) {
+
+            pStmt.setString(1, newCurrency.getCode());
+            pStmt.setString(2, newCurrency.getFullName());
+            pStmt.setString(3, newCurrency.getSign());
+            pStmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return Optional.ofNullable(newCurrency);
     }
 
     @Override

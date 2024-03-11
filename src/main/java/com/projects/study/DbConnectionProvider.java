@@ -26,9 +26,7 @@ public class DbConnectionProvider {
 
 
     public static Connection get() {
-        if (connection == null) {
-            initConnection();
-        }
+        initConnection();
         return connection;
     }
 
@@ -39,4 +37,5 @@ public class DbConnectionProvider {
             throw new RuntimeException(e);
         }
     }
+
 }

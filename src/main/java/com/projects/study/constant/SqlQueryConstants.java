@@ -10,4 +10,9 @@ public class SqlQueryConstants {
             SELECT *
             FROM currencies
             """;
+    public static final String CUR_SAVE = """
+            INSERT INTO currencies (code,full_name,sign)
+            VALUES (?,?,?)
+            """;
+
 }
