@@ -30,12 +30,13 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
     }
 
     @Override
-    public void save(ExchangeRate exchangeRate) {
-
+    public Optional<ExchangeRate> save(ExchangeRate exchangeRate) {
+        return Optional.ofNullable(new ExchangeRate());
     }
 
     @Override
-    public void delete(long id) {
-
+    public Optional<ExchangeRate> delete(long id) {
+        return Optional.ofNullable(new ExchangeRate());
     }
+
 }

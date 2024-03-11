@@ -8,8 +8,8 @@ public interface Dao<T> {
 
     List<T> getAll();
 
-    void save(T t);
+    Optional<T> save(T t);
 
-    void delete(long id);
+    Optional<T> delete(long id);
 
 }

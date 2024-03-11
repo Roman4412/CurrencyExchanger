@@ -74,13 +74,13 @@ public class CurrencyDao implements Dao<Currency> {
     }
 
     @Override
-    public void save(Currency currency) {
-
+    public Optional<Currency> save(Currency currency) {
+        return Optional.ofNullable(new Currency());
     }
 
     @Override
-    public void delete(long id) {
-
+    public Optional<Currency> delete(long id) {
+        return Optional.ofNullable(new Currency());
     }
 
 }
