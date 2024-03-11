@@ -34,6 +34,9 @@ public class CurrenciesServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF8");
+
         String code = req.getParameter("code");
         String name = req.getParameter("name");
         String sign = req.getParameter("sign");
