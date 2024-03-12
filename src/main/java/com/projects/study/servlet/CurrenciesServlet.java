@@ -30,6 +30,7 @@ public class CurrenciesServlet extends HttpServlet {
         List<Currency> currencies = currencyService.getAll();
         ObjectMapper objectMapper = new ObjectMapper();
         writer.println(objectMapper.writeValueAsString(currencies));
+        writer.close();
     }
 
     @Override
@@ -53,6 +54,7 @@ public class CurrenciesServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 PrintWriter writer = resp.getWriter();
                 newCurrency = savedCurrency.get();
+
                 writer.println(jsonMapper.writeValueAsString(newCurrency));
             } else {
                 resp.setStatus(HttpServletResponse.SC_CONFLICT);
