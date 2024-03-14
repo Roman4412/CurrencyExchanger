@@ -4,6 +4,7 @@ import com.projects.study.DAO.Dao;
 import com.projects.study.entity.ExchangeRate;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ExchangeRateService {
     Dao<ExchangeRate> dao;
@@ -14,6 +15,10 @@ public class ExchangeRateService {
 
     public List<ExchangeRate> getAll() {
         return dao.getAll();
+    }
+
+    public Optional<ExchangeRate> getExchangeRateByCode(String curPair) {
+        return dao.getByCode(curPair);
     }
 
 }

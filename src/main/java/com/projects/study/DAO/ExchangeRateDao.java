@@ -5,10 +5,7 @@ import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +28,46 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
     }
 
     @Override
-    public Optional<ExchangeRate> getByCode(String code) {
-        return Optional.empty();
+    public Optional<ExchangeRate> getByCode(String curPair) {
+        ExchangeRate rate = null;
+
+        String firstCur = curPair.substring(0, 3);
+        String secondCur = curPair.substring(3, 6);
+        try (Connection connection = DbConnectionProvider.get();
+             PreparedStatement pStmt = connection.prepareStatement(RATE_GET_BY_CUR_PAIR)) {
+
+            pStmt.setString(1, firstCur);
+            pStmt.setString(2, secondCur);
+            ResultSet resultSet = pStmt.executeQuery();
+
+            while (resultSet.next()) {
+                Currency bCurrency = new Currency();
+                Currency tCurrency = new Currency();
+                rate = new ExchangeRate();
+
+                rate.setId(resultSet.getLong(ID));
+
+                bCurrency.setId(resultSet.getLong(RATES_BASE_CUR_ID));
+                bCurrency.setCode(resultSet.getString(RATES_BASE_CUR_CODE));
+                bCurrency.setFullName(resultSet.getString(RATES_BASE_CUR_NAME));
+                bCurrency.setSign(resultSet.getString(RATES_BASE_CUR_SIGN));
+
+                tCurrency.setId(resultSet.getLong(RATES_TARGET_CUR_ID));
+                tCurrency.setCode(resultSet.getString(RATES_TARGET_CUR_CODE));
+                tCurrency.setFullName(resultSet.getString(RATES_TARGET_CUR_NAME));
+                tCurrency.setSign(resultSet.getString(RATES_TARGET_CUR_SIGN));
+
+                rate.setRate(new BigDecimal(resultSet.getString(RATES_RATE)));
+                rate.setBaseCurrency(bCurrency);
+                rate.setTargetCurrency(tCurrency);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        return Optional.ofNullable(rate);
     }
 
     @Override
