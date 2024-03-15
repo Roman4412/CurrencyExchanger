@@ -46,5 +46,12 @@ public class SqlQueryConstants {
                      JOIN currencies targetCurrency ON er.target_currency_id = targetCurrency.id
             WHERE base_code LIKE ? AND target_code LIKE ?;
             """;
+    public static final String RATE_SAVE = """
+            INSERT INTO exchange_rates (base_currency_id, target_currency_id, rate)
+              SELECT
+                  (SELECT id FROM currencies WHERE code LIKE ?),
+                  (SELECT id FROM currencies WHERE code LIKE ?),
+                  ?;
+            """;
 
 }

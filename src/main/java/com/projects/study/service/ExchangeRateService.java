@@ -21,4 +21,12 @@ public class ExchangeRateService {
         return dao.getByCode(curPair);
     }
 
+    public Optional<ExchangeRate> save(ExchangeRate exchangeRate) {
+        String curPair = exchangeRate.getBaseCurrency().getCode() + exchangeRate.getTargetCurrency().getCode();
+        if (getExchangeRateByCode(curPair).isPresent()) {
+            return Optional.empty();
+        }
+        return dao.save(exchangeRate);
+    }
+
 }

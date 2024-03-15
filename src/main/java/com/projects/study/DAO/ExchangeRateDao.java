@@ -110,7 +110,18 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
 
     @Override
     public Optional<ExchangeRate> save(ExchangeRate exchangeRate) {
-        return Optional.ofNullable(new ExchangeRate());
+        try (Connection connection = DbConnectionProvider.get();
+             PreparedStatement pStmt = connection.prepareStatement(RATE_SAVE)) {
+
+            pStmt.setString(1, exchangeRate.getBaseCurrency().getCode());
+            pStmt.setString(2, exchangeRate.getTargetCurrency().getCode());
+            pStmt.setDouble(3, exchangeRate.getRate().doubleValue());
+            pStmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return Optional.ofNullable(exchangeRate);
     }
 
     @Override
