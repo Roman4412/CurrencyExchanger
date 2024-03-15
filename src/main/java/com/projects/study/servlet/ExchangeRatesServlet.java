@@ -60,13 +60,12 @@ public class ExchangeRatesServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 PrintWriter writer = resp.getWriter();
                 newExchangeRate = savedExchangeRate.get();
-
                 writer.println(jsonMapper.writeValueAsString(newExchangeRate));
+                writer.close();
             } else {
                 resp.setStatus(HttpServletResponse.SC_CONFLICT);
             }
         }
-
     }
 
 }

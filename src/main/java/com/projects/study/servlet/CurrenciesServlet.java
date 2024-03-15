@@ -44,6 +44,7 @@ public class CurrenciesServlet extends HttpServlet {
         if (code.isBlank() || name.isBlank() || sign.isBlank()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
+            PrintWriter writer = resp.getWriter();
             Currency newCurrency = new Currency();
             newCurrency.setCode(code.toLowerCase().trim());
             newCurrency.setFullName(name.trim());
@@ -52,10 +53,11 @@ public class CurrenciesServlet extends HttpServlet {
             Optional<Currency> savedCurrency = currencyService.saveCurrency(newCurrency);
             if (savedCurrency.isPresent()) {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
-                PrintWriter writer = resp.getWriter();
+
                 newCurrency = savedCurrency.get();
 
                 writer.println(jsonMapper.writeValueAsString(newCurrency));
+                writer.close();
             } else {
                 resp.setStatus(HttpServletResponse.SC_CONFLICT);
             }
