@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projects.study.DAO.CurrencyDao;
 import com.projects.study.DAO.Dao;
 import com.projects.study.entity.Currency;
+import com.projects.study.exception.CurrencyNotFoundException;
+import com.projects.study.exception.ExchangerExceptionHandler;
 import com.projects.study.service.CurrencyService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Optional;
 
 @WebServlet("/currency/*")
 public class CurrencyServlet extends HttpServlet {
@@ -22,7 +22,7 @@ public class CurrencyServlet extends HttpServlet {
     private final ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF8");
 
@@ -30,26 +30,20 @@ public class CurrencyServlet extends HttpServlet {
         if (curCode.isBlank()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            Optional<Currency> currencyOpt = currencyService.getCurrencyByCode(curCode);
-            if (currencyOpt.isPresent()) {
+            try {
+                Currency currency = currencyService.getCurrencyByCode(curCode);
+                String curAsJson = jsonMapper.writeValueAsString(currency);
                 PrintWriter writer = resp.getWriter();
-                writer.println(jsonMapper.writeValueAsString(currencyOpt.get()));
+                writer.println(curAsJson);
                 writer.close();
-            } else {
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+            } catch (CurrencyNotFoundException e) {
+                resp.reset();
+                ExchangerExceptionHandler.handle(req, resp, e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
-    }
-
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
     }
 
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projects.study.DAO.CurrencyDao;
 import com.projects.study.DAO.Dao;
 import com.projects.study.entity.Currency;
+import com.projects.study.exception.CurrencyAlreadyExistException;
+import com.projects.study.exception.ExchangerExceptionHandler;
 import com.projects.study.service.CurrencyService;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,7 +15,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Optional;
 
 @WebServlet("/currencies")
 public class CurrenciesServlet extends HttpServlet {
@@ -22,19 +23,21 @@ public class CurrenciesServlet extends HttpServlet {
     private final ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF8");
 
-        PrintWriter writer = resp.getWriter();
-        List<Currency> currencies = currencyService.getAll();
-        ObjectMapper objectMapper = new ObjectMapper();
-        writer.println(objectMapper.writeValueAsString(currencies));
-        writer.close();
+        try (PrintWriter writer = resp.getWriter()) {
+            List<Currency> currencies = currencyService.getAll();
+            writer.println(jsonMapper.writeValueAsString(currencies));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF8");
 
@@ -44,22 +47,21 @@ public class CurrenciesServlet extends HttpServlet {
         if (code.isBlank() || name.isBlank() || sign.isBlank()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            PrintWriter writer = resp.getWriter();
-            Currency newCurrency = new Currency();
-            newCurrency.setCode(code.toLowerCase().trim());
-            newCurrency.setFullName(name.trim());
-            newCurrency.setSign(sign.trim());
+            try {
+                Currency currency = new Currency();
+                currency.setCode(code.toUpperCase().trim());
+                currency.setFullName(name.trim());
+                currency.setSign(sign.trim());
 
-            Optional<Currency> savedCurrency = currencyService.saveCurrency(newCurrency);
-            if (savedCurrency.isPresent()) {
+                Currency createdCurrency = currencyService.saveCurrency(currency);
                 resp.setStatus(HttpServletResponse.SC_CREATED);
-
-                newCurrency = savedCurrency.get();
-
-                writer.println(jsonMapper.writeValueAsString(newCurrency));
+                PrintWriter writer = resp.getWriter();
+                writer.println(jsonMapper.writeValueAsString(createdCurrency));
                 writer.close();
-            } else {
-                resp.setStatus(HttpServletResponse.SC_CONFLICT);
+            } catch (CurrencyAlreadyExistException e) {
+                ExchangerExceptionHandler.handle(req, resp, e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     }
