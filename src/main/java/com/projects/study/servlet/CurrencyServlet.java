@@ -38,7 +38,6 @@ public class CurrencyServlet extends HttpServlet {
                 writer.close();
 
             } catch (CurrencyNotFoundException e) {
-                resp.reset();
                 ExchangerExceptionHandler.handle(req, resp, e);
             } catch (IOException e) {
                 throw new RuntimeException(e);
