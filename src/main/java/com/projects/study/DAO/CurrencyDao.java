@@ -28,20 +28,20 @@ public class CurrencyDao implements Dao<Currency> {
     public Optional<Currency> getByCode(String code) {
         Currency currency = null;
 
-        try (Connection connection = DbConnectionProvider.get();
-             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_CODE)) {
+        try(Connection connection = DbConnectionProvider.get();
+            PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_CODE)) {
 
             pStmt.setString(1, code);
             ResultSet resultSet = pStmt.executeQuery();
 
-            while (resultSet.next()) {
+            while(resultSet.next()) {
                 currency = new Currency();
                 currency.setId(resultSet.getLong(ID));
                 currency.setCode(resultSet.getString(CUR_CODE));
                 currency.setFullName(resultSet.getString(CUR_NAME));
                 currency.setSign(resultSet.getString(CUR_SIGN));
             }
-        } catch (SQLException e) {
+        } catch(SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -53,11 +53,11 @@ public class CurrencyDao implements Dao<Currency> {
     public List<Currency> getAll() {
         List<Currency> currencies = new ArrayList<>();
 
-        try (Connection connection = DbConnectionProvider.get();
-             Statement stmt = connection.createStatement();
-             ResultSet resultSet = stmt.executeQuery(CUR_GET_ALL)) {
+        try(Connection connection = DbConnectionProvider.get();
+            Statement stmt = connection.createStatement();
+            ResultSet resultSet = stmt.executeQuery(CUR_GET_ALL)) {
 
-            while (resultSet.next()) {
+            while(resultSet.next()) {
                 Currency currency = new Currency();
                 currency.setId(resultSet.getLong(ID));
                 currency.setCode(resultSet.getString(CUR_CODE));
@@ -65,7 +65,7 @@ public class CurrencyDao implements Dao<Currency> {
                 currency.setSign(resultSet.getString(CUR_SIGN));
                 currencies.add(currency);
             }
-        } catch (SQLException e) {
+        } catch(SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -76,14 +76,14 @@ public class CurrencyDao implements Dao<Currency> {
     @Override
     public Optional<Currency> save(Currency currency) {
         Currency newCurrency = currency;
-        try (Connection connection = DbConnectionProvider.get();
-             PreparedStatement pStmt = connection.prepareStatement(CUR_SAVE)) {
+        try(Connection connection = DbConnectionProvider.get();
+            PreparedStatement pStmt = connection.prepareStatement(CUR_SAVE)) {
 
             pStmt.setString(1, newCurrency.getCode());
             pStmt.setString(2, newCurrency.getFullName());
             pStmt.setString(3, newCurrency.getSign());
             pStmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch(SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -91,8 +91,13 @@ public class CurrencyDao implements Dao<Currency> {
     }
 
     @Override
-    public Optional<Currency> delete(long id) {
-        return Optional.ofNullable(new Currency());
+    public boolean delete(long id) {
+        return false;
+    }
+
+    @Override
+    public boolean update(Currency currency) {
+        return false;
     }
 
 }

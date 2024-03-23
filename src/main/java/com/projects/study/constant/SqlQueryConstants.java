@@ -53,5 +53,10 @@ public class SqlQueryConstants {
                   (SELECT id FROM currencies WHERE code LIKE ?),
                   ?;
             """;
+    public static final String RATE_UPDATE = """
+            UPDATE exchange_rates
+            SET rate = ?
+            WHERE id = ?
+            """;
 
 }

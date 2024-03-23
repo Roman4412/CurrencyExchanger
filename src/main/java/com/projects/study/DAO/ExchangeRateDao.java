@@ -33,14 +33,14 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
 
         String firstCur = curPair.substring(0, 3);
         String secondCur = curPair.substring(3, 6);
-        try (Connection connection = DbConnectionProvider.get();
-             PreparedStatement pStmt = connection.prepareStatement(RATE_GET_BY_CUR_PAIR)) {
+        try(Connection connection = DbConnectionProvider.get();
+            PreparedStatement pStmt = connection.prepareStatement(RATE_GET_BY_CUR_PAIR)) {
 
             pStmt.setString(1, firstCur);
             pStmt.setString(2, secondCur);
             ResultSet resultSet = pStmt.executeQuery();
 
-            while (resultSet.next()) {
+            while(resultSet.next()) {
                 Currency bCurrency = new Currency();
                 Currency tCurrency = new Currency();
                 rate = new ExchangeRate();
@@ -62,7 +62,7 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
                 rate.setTargetCurrency(tCurrency);
 
             }
-        } catch (SQLException e) {
+        } catch(SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -74,11 +74,11 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
     public List<ExchangeRate> getAll() {
         List<ExchangeRate> exchangeRates = new ArrayList<>();
 
-        try (Connection connection = DbConnectionProvider.get();
-             Statement stmt = connection.createStatement();
-             ResultSet resultSet = stmt.executeQuery(RATES_GET_ALL)) {
+        try(Connection connection = DbConnectionProvider.get();
+            Statement stmt = connection.createStatement();
+            ResultSet resultSet = stmt.executeQuery(RATES_GET_ALL)) {
 
-            while (resultSet.next()) {
+            while(resultSet.next()) {
                 ExchangeRate exchangeRate = new ExchangeRate();
                 Currency bCurrency = new Currency();
                 Currency tCurrency = new Currency();
@@ -99,7 +99,7 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
                 exchangeRate.setTargetCurrency(tCurrency);
                 exchangeRates.add(exchangeRate);
             }
-        } catch (SQLException e) {
+        } catch(SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -110,14 +110,14 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
 
     @Override
     public Optional<ExchangeRate> save(ExchangeRate exchangeRate) {
-        try (Connection connection = DbConnectionProvider.get();
-             PreparedStatement pStmt = connection.prepareStatement(RATE_SAVE)) {
+        try(Connection connection = DbConnectionProvider.get();
+            PreparedStatement pStmt = connection.prepareStatement(RATE_SAVE)) {
 
             pStmt.setString(1, exchangeRate.getBaseCurrency().getCode());
             pStmt.setString(2, exchangeRate.getTargetCurrency().getCode());
             pStmt.setDouble(3, exchangeRate.getRate().doubleValue());
             pStmt.executeUpdate();
-        } catch (SQLException e) {
+        } catch(SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -125,8 +125,22 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
     }
 
     @Override
-    public Optional<ExchangeRate> delete(long id) {
-        return Optional.ofNullable(new ExchangeRate());
+    public boolean update(ExchangeRate rate) {
+        try(Connection connection = DbConnectionProvider.get();
+            PreparedStatement pStmt = connection.prepareStatement(RATE_UPDATE)) {
+
+            pStmt.setLong(2, rate.getId());
+            pStmt.setDouble(1, rate.getRate().doubleValue());
+            return pStmt.executeUpdate() == 1;
+
+        } catch(SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean delete(long id) {
+        return false;
     }
 
 }

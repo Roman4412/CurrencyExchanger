@@ -10,6 +10,8 @@ public interface Dao<T> {
 
     Optional<T> save(T t);
 
-    Optional<T> delete(long id);
+    boolean delete(long id);
+
+    boolean update(T t);
 
 }

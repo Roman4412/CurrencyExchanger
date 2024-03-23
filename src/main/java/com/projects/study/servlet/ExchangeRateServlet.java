@@ -22,23 +22,47 @@ public class ExchangeRateServlet extends HttpServlet {
     ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF8");
+
+        String code = req.getPathInfo().substring(1);
+        String rate = req.getParameter("rate");
+        if (code.isBlank() || rate.isBlank()) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } else {
+            try {
+                ExchangeRate updatedRate = exchangeRateService.update(code, rate);
+                String rateAsJson = jsonMapper.writeValueAsString(updatedRate);
+                PrintWriter writer = resp.getWriter();
+                writer.println(rateAsJson);
+                writer.close();
+            } catch(ExchangeRateNotFoundException e) {
+                ExchangerExceptionHandler.handle(req, resp, e);
+            } catch(IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF8");
 
-        String curPair = req.getPathInfo().substring(1);
-        if (curPair.isBlank()) {
+        String code = req.getPathInfo().substring(1);
+        if (code.isBlank()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
             try {
-                ExchangeRate rate = exchangeRateService.getExchangeRateByCode(curPair);
+                ExchangeRate rate = exchangeRateService.getByCode(code);
                 String rateAsJson = jsonMapper.writeValueAsString(rate);
                 PrintWriter writer = resp.getWriter();
                 writer.println(rateAsJson);
                 writer.close();
-            } catch (ExchangeRateNotFoundException e) {
+            } catch(ExchangeRateNotFoundException e) {
                 ExchangerExceptionHandler.handle(req, resp, e);
-            } catch (IOException e) {
+            } catch(IOException e) {
                 throw new RuntimeException(e);
             }
 
