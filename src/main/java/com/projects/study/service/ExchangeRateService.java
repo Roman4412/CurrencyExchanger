@@ -16,7 +16,7 @@ public class ExchangeRateService {
     }
 
     public List<ExchangeRate> getAll() {
-        return dao.getAll();
+        return dao.getAll().toList();
     }
 
     public ExchangeRate getByCode(String code) {
@@ -30,7 +30,7 @@ public class ExchangeRateService {
             throw new ExchangeRateAlreadyExistException(
                     String.format("Exchange rate with code %s already exist", code));
         }
-        return dao.save(exchangeRate).get();
+        return dao.save(exchangeRate);
     }
 
     public ExchangeRate update(String code, String rate) {

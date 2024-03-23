@@ -53,7 +53,7 @@ public class CurrenciesServlet extends HttpServlet {
                 currency.setFullName(name.trim());
                 currency.setSign(sign.trim());
 
-                Currency createdCurrency = currencyService.saveCurrency(currency);
+                Currency createdCurrency = currencyService.save(currency);
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 PrintWriter writer = resp.getWriter();
                 writer.println(jsonMapper.writeValueAsString(createdCurrency));

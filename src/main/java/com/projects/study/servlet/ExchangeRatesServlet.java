@@ -57,8 +57,8 @@ public class ExchangeRatesServlet extends HttpServlet {
         } else {
             try {
                 ExchangeRate newExchangeRate = new ExchangeRate();
-                Currency baseCur = currencyService.getCurrencyByCode(baseCurCode);
-                Currency targetCur = currencyService.getCurrencyByCode(targetCurCode);
+                Currency baseCur = currencyService.getByCode(baseCurCode);
+                Currency targetCur = currencyService.getByCode(targetCurCode);
                 newExchangeRate.setBaseCurrency(baseCur);
                 newExchangeRate.setTargetCurrency(targetCur);
                 newExchangeRate.setRate(new BigDecimal(rate));

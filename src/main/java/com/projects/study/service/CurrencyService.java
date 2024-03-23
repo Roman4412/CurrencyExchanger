@@ -15,20 +15,20 @@ public class CurrencyService {
     }
 
     public List<Currency> getAll() {
-        return dao.getAll();
+        return dao.getAll().toList();
     }
 
-    public Currency getCurrencyByCode(String code) {
+    public Currency getByCode(String code) {
         return dao.getByCode(code).orElseThrow(
                 () -> new CurrencyNotFoundException(String.format("Currency with code %s not found", code)));
     }
 
-    public Currency saveCurrency(Currency currency) {
+    public Currency save(Currency currency) {
         if (dao.getByCode(currency.getCode()).isPresent()) {
             throw new CurrencyAlreadyExistException(
                     String.format("Currency with code %s already exist", currency.getCode()));
         }
-        return dao.save(currency).get();
+        return dao.save(currency);
     }
 
 }

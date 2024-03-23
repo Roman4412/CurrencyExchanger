@@ -7,6 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.projects.study.constant.ColumnLabels.*;
 import static com.projects.study.constant.SqlQueryConstants.*;
@@ -50,9 +51,8 @@ public class CurrencyDao implements Dao<Currency> {
     }
 
     @Override
-    public List<Currency> getAll() {
-        List<Currency> currencies = new ArrayList<>();
-
+    public Stream<Currency> getAll() {
+        Stream.Builder<Currency> currencies = Stream.builder();
         try(Connection connection = DbConnectionProvider.get();
             Statement stmt = connection.createStatement();
             ResultSet resultSet = stmt.executeQuery(CUR_GET_ALL)) {
@@ -65,34 +65,28 @@ public class CurrencyDao implements Dao<Currency> {
                 currency.setSign(resultSet.getString(CUR_SIGN));
                 currencies.add(currency);
             }
+            return currencies.build();
         } catch(SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-
-        return currencies;
     }
 
     @Override
-    public Optional<Currency> save(Currency currency) {
-        Currency newCurrency = currency;
+    public Currency save(Currency currency) {
         try(Connection connection = DbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(CUR_SAVE)) {
-
+            Currency newCurrency = currency;
             pStmt.setString(1, newCurrency.getCode());
             pStmt.setString(2, newCurrency.getFullName());
             pStmt.setString(3, newCurrency.getSign());
-            pStmt.executeUpdate();
+            pStmt.execute();
+            ResultSet resultSet = pStmt.getGeneratedKeys();
+            newCurrency.setId(resultSet.getLong(1));
+            return newCurrency;
         } catch(SQLException e) {
             throw new RuntimeException(e);
         }
-
-        return Optional.ofNullable(newCurrency);
-    }
-
-    @Override
-    public boolean delete(long id) {
-        return false;
     }
 
     @Override

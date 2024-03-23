@@ -31,7 +31,7 @@ public class CurrencyServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
             try {
-                Currency currency = currencyService.getCurrencyByCode(curCode);
+                Currency currency = currencyService.getByCode(curCode);
                 String curAsJson = jsonMapper.writeValueAsString(currency);
                 PrintWriter writer = resp.getWriter();
                 writer.println(curAsJson);

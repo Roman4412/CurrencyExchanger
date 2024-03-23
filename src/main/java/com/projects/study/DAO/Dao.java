@@ -1,16 +1,14 @@
 package com.projects.study.DAO;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface Dao<T> {
     Optional<T> getByCode(String code);
 
-    List<T> getAll();
+    Stream<T> getAll();
 
-    Optional<T> save(T t);
-
-    boolean delete(long id);
+    T save(T t);
 
     boolean update(T t);
 
