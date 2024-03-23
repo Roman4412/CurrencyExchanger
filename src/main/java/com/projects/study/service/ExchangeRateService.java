@@ -2,9 +2,10 @@ package com.projects.study.service;
 
 import com.projects.study.DAO.Dao;
 import com.projects.study.entity.ExchangeRate;
+import com.projects.study.exception.ExchangeRateAlreadyExistException;
+import com.projects.study.exception.ExchangeRateNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ExchangeRateService {
     Dao<ExchangeRate> dao;
@@ -17,16 +18,18 @@ public class ExchangeRateService {
         return dao.getAll();
     }
 
-    public Optional<ExchangeRate> getExchangeRateByCode(String curPair) {
-        return dao.getByCode(curPair);
+    public ExchangeRate getExchangeRateByCode(String curPair) {
+        return dao.getByCode(curPair).orElseThrow(() -> new ExchangeRateNotFoundException(
+                String.format("Exchange rate with code %s not found", curPair)));
     }
 
-    public Optional<ExchangeRate> save(ExchangeRate exchangeRate) {
-        String curPair = exchangeRate.getBaseCurrency().getCode() + exchangeRate.getTargetCurrency().getCode();
-        if (getExchangeRateByCode(curPair).isPresent()) {
-            return Optional.empty();
+    public ExchangeRate save(ExchangeRate exchangeRate) {
+        String code = exchangeRate.getBaseCurrency().getCode() + exchangeRate.getTargetCurrency().getCode();
+        if (dao.getByCode(code).isPresent()) {
+            throw new ExchangeRateAlreadyExistException(
+                    String.format("Exchange rate with code %s already exist", code));
         }
-        return dao.save(exchangeRate);
+        return dao.save(exchangeRate).get();
     }
 
 }

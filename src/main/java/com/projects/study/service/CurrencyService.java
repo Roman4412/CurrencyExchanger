@@ -6,7 +6,6 @@ import com.projects.study.exception.CurrencyAlreadyExistException;
 import com.projects.study.exception.CurrencyNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 public class CurrencyService {
     Dao<Currency> dao;
@@ -19,13 +18,12 @@ public class CurrencyService {
         return dao.getAll();
     }
 
-    public Currency getCurrencyByCode(String code) throws CurrencyNotFoundException {
-        return dao.getByCode(code)
-                .orElseThrow(
-                        () -> new CurrencyNotFoundException(String.format("Currency with code %s not found", code)));
+    public Currency getCurrencyByCode(String code) {
+        return dao.getByCode(code).orElseThrow(
+                () -> new CurrencyNotFoundException(String.format("Currency with code %s not found", code)));
     }
 
-    public Currency saveCurrency(Currency currency) throws CurrencyAlreadyExistException {
+    public Currency saveCurrency(Currency currency) {
         if (dao.getByCode(currency.getCode()).isPresent()) {
             throw new CurrencyAlreadyExistException(
                     String.format("Currency with code %s already exist", currency.getCode()));

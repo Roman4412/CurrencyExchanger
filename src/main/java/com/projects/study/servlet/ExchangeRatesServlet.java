@@ -6,6 +6,10 @@ import com.projects.study.DAO.Dao;
 import com.projects.study.DAO.ExchangeRateDao;
 import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
+import com.projects.study.exception.CurrencyNotFoundException;
+import com.projects.study.exception.ExchangeRateAlreadyExistException;
+import com.projects.study.exception.ExchangerExceptionHandler;
+import com.projects.study.service.CurrencyService;
 import com.projects.study.service.ExchangeRateService;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,28 +20,32 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @WebServlet("/exchangeRates")
 public class ExchangeRatesServlet extends HttpServlet {
     Dao<ExchangeRate> exchangeRateDao = ExchangeRateDao.getInstance();
     Dao<Currency> currencyDao = CurrencyDao.getInstance();
+
+    CurrencyService currencyService = new CurrencyService(currencyDao);
     ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateDao);
     private final ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF8");
 
-        PrintWriter writer = resp.getWriter();
-        List<ExchangeRate> rates = exchangeRateService.getAll();
-        writer.println(jsonMapper.writeValueAsString(rates));
-        writer.close();
+        try (PrintWriter writer = resp.getWriter()) {
+            List<ExchangeRate> rates = exchangeRateService.getAll();
+            writer.println(jsonMapper.writeValueAsString(rates));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF8");
 
@@ -47,23 +55,24 @@ public class ExchangeRatesServlet extends HttpServlet {
         if (baseCurCode.isBlank() || targetCurCode.isBlank() || rate.isBlank()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
+            try {
+                ExchangeRate newExchangeRate = new ExchangeRate();
+                Currency baseCur = currencyService.getCurrencyByCode(baseCurCode);
+                Currency targetCur = currencyService.getCurrencyByCode(targetCurCode);
+                newExchangeRate.setBaseCurrency(baseCur);
+                newExchangeRate.setTargetCurrency(targetCur);
+                newExchangeRate.setRate(new BigDecimal(rate));
+                ExchangeRate savedExchangeRate = exchangeRateService.save(newExchangeRate);
 
-            ExchangeRate newExchangeRate = new ExchangeRate();
-            Currency baseCur = currencyDao.getByCode(baseCurCode).orElseThrow();
-            Currency targetCur = currencyDao.getByCode(targetCurCode).orElseThrow();
-            newExchangeRate.setBaseCurrency(baseCur);
-            newExchangeRate.setTargetCurrency(targetCur);
-            newExchangeRate.setRate(new BigDecimal(rate));
-            Optional<ExchangeRate> savedExchangeRate = exchangeRateService.save(newExchangeRate);
-
-            if (savedExchangeRate.isPresent()) {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 PrintWriter writer = resp.getWriter();
-                newExchangeRate = savedExchangeRate.get();
-                writer.println(jsonMapper.writeValueAsString(newExchangeRate));
+                String rateAsJson = jsonMapper.writeValueAsString(savedExchangeRate);
+                writer.println(rateAsJson);
                 writer.close();
-            } else {
-                resp.setStatus(HttpServletResponse.SC_CONFLICT);
+            } catch (ExchangeRateAlreadyExistException | CurrencyNotFoundException e) {
+                ExchangerExceptionHandler.handle(req, resp, e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     }

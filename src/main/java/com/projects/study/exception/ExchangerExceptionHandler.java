@@ -12,29 +12,29 @@ public class ExchangerExceptionHandler {
     private static final ObjectMapper jsonMapper = new ObjectMapper();
 
     public static void handle(HttpServletRequest req, HttpServletResponse res, Throwable t) {
-        if (t instanceof CurrencyNotFoundException) {
+        if (t instanceof CurrencyNotFoundException || t instanceof ExchangeRateNotFoundException) {
             handleNotFoundExceptions(res, t);
-        } else if (t instanceof CurrencyAlreadyExistException) {
+        } else if (t instanceof CurrencyAlreadyExistException || t instanceof ExchangeRateAlreadyExistException) {
             handleAlreadyExistExceptions(res, t);
         }
     }
 
     private static void handleAlreadyExistExceptions(HttpServletResponse res, Throwable t) {
-        try (PrintWriter writer = res.getWriter()) {
+        try(PrintWriter writer = res.getWriter()) {
             res.setStatus(HttpServletResponse.SC_CONFLICT);
             String excAsJson = jsonMapper.writeValueAsString(new ExceptionDto(t.getMessage()));
             writer.println(excAsJson);
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private static void handleNotFoundExceptions(HttpServletResponse res, Throwable t) {
-        try (PrintWriter writer = res.getWriter()) {
+        try(PrintWriter writer = res.getWriter()) {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
             String excAsJson = jsonMapper.writeValueAsString(new ExceptionDto(t.getMessage()));
             writer.println(excAsJson);
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new RuntimeException(e);
         }
     }
