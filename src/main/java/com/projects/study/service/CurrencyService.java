@@ -1,6 +1,6 @@
 package com.projects.study.service;
 
-import com.projects.study.DAO.Dao;
+import com.projects.study.dao.Dao;
 import com.projects.study.entity.Currency;
 import com.projects.study.exception.CurrencyAlreadyExistException;
 import com.projects.study.exception.CurrencyNotFoundException;

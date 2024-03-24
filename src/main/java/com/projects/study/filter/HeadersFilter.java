@@ -1,4 +1,4 @@
-package filter;
+package com.projects.study.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
@@ -13,7 +13,6 @@ public class HeadersFilter implements Filter {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF8");
         chain.doFilter(request, response);
-        System.out.println("HeadersF");
     }
 
 }

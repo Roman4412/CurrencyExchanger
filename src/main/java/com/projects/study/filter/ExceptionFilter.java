@@ -1,4 +1,4 @@
-package filter;
+package com.projects.study.filter;
 
 import com.projects.study.exception.ExchangerExceptionHandler;
 import jakarta.servlet.*;
@@ -11,7 +11,6 @@ public class ExceptionFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
         try {
-            System.out.println("ExceptionFilter");
             chain.doFilter(request, response);
         } catch(Throwable t) {
             ExchangerExceptionHandler.handle((HttpServletResponse) response, t);

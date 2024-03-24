@@ -1,6 +1,6 @@
 package com.projects.study.service;
 
-import com.projects.study.DAO.Dao;
+import com.projects.study.dao.Dao;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.exception.ExchangeRateAlreadyExistException;
 import com.projects.study.exception.ExchangeRateNotFoundException;

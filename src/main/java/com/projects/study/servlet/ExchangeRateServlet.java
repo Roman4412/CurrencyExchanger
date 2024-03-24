@@ -1,8 +1,8 @@
 package com.projects.study.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.projects.study.DAO.Dao;
-import com.projects.study.DAO.ExchangeRateDao;
+import com.projects.study.dao.Dao;
+import com.projects.study.dao.ExchangeRateDao;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.service.ExchangeRateService;
 import jakarta.servlet.annotation.WebServlet;

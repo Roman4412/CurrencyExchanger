@@ -1,4 +1,4 @@
-package com.projects.study.DAO;
+package com.projects.study.dao;
 
 import com.projects.study.DbConnectionProvider;
 import com.projects.study.entity.Currency;

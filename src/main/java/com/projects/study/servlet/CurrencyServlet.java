@@ -1,8 +1,8 @@
 package com.projects.study.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.projects.study.DAO.CurrencyDao;
-import com.projects.study.DAO.Dao;
+import com.projects.study.dao.CurrencyDao;
+import com.projects.study.dao.Dao;
 import com.projects.study.entity.Currency;
 import com.projects.study.service.CurrencyService;
 import jakarta.servlet.annotation.WebServlet;

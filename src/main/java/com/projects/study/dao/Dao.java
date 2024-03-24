@@ -1,4 +1,4 @@
-package com.projects.study.DAO;
+package com.projects.study.dao;
 
 import java.util.Optional;
 import java.util.stream.Stream;
