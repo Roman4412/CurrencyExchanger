@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projects.study.DAO.CurrencyDao;
 import com.projects.study.DAO.Dao;
 import com.projects.study.entity.Currency;
-import com.projects.study.exception.CurrencyAlreadyExistException;
-import com.projects.study.exception.ExchangerExceptionHandler;
 import com.projects.study.service.CurrencyService;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,46 +21,31 @@ public class CurrenciesServlet extends HttpServlet {
     private final ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF8");
-
-        try (PrintWriter writer = resp.getWriter()) {
-            List<Currency> currencies = currencyService.getAll();
-            writer.println(jsonMapper.writeValueAsString(currencies));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        List<Currency> currencies = currencyService.getAll();
+        PrintWriter writer = resp.getWriter();
+        writer.println(jsonMapper.writeValueAsString(currencies));
+        writer.close();
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF8");
-
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String code = req.getParameter("code");
         String name = req.getParameter("name");
         String sign = req.getParameter("sign");
         if (code.isBlank() || name.isBlank() || sign.isBlank()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            try {
-                Currency currency = new Currency();
-                currency.setCode(code.toUpperCase().trim());
-                currency.setFullName(name.trim());
-                currency.setSign(sign.trim());
+            Currency currency = new Currency();
+            currency.setCode(code.toUpperCase().trim());
+            currency.setFullName(name.trim());
+            currency.setSign(sign.trim());
 
-                Currency createdCurrency = currencyService.save(currency);
-                resp.setStatus(HttpServletResponse.SC_CREATED);
-                PrintWriter writer = resp.getWriter();
-                writer.println(jsonMapper.writeValueAsString(createdCurrency));
-                writer.close();
-            } catch (CurrencyAlreadyExistException e) {
-                ExchangerExceptionHandler.handle(req, resp, e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            Currency createdCurrency = currencyService.save(currency);
+            resp.setStatus(HttpServletResponse.SC_CREATED);
+            PrintWriter writer = resp.getWriter();
+            writer.println(jsonMapper.writeValueAsString(createdCurrency));
+            writer.close();
         }
     }
 

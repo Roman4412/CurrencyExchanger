@@ -2,7 +2,6 @@ package com.projects.study.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projects.study.dto.ExceptionDto;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.io.PrintWriter;
 public class ExchangerExceptionHandler {
     private static final ObjectMapper jsonMapper = new ObjectMapper();
 
-    public static void handle(HttpServletRequest req, HttpServletResponse res, Throwable t) {
+    public static void handle(HttpServletResponse res, Throwable t) {
         if (t instanceof CurrencyNotFoundException || t instanceof ExchangeRateNotFoundException) {
             handleNotFoundExceptions(res, t);
         } else if (t instanceof CurrencyAlreadyExistException || t instanceof ExchangeRateAlreadyExistException) {

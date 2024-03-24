@@ -4,8 +4,6 @@ import com.projects.study.DbConnectionProvider;
 import com.projects.study.entity.Currency;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
