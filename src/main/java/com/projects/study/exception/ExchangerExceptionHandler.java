@@ -11,30 +11,32 @@ public class ExchangerExceptionHandler {
     private static final ObjectMapper jsonMapper = new ObjectMapper();
 
     public static void handle(HttpServletResponse res, Throwable t) {
+        PrintWriter writer = null;
+        try {
+            writer = res.getWriter();
+            setResponseStatus(res, t);
+            String excAsJson = jsonMapper.writeValueAsString(new ExceptionDto(t.getMessage()));
+            writer.println(excAsJson);
+        } catch(IOException e) {
+            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            throw new RuntimeException(e);
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+            t.printStackTrace();
+        }
+    }
+
+    private static void setResponseStatus(HttpServletResponse res, Throwable t) {
         if (t instanceof CurrencyNotFoundException || t instanceof ExchangeRateNotFoundException) {
-            handleNotFoundExceptions(res, t);
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else if (t instanceof CurrencyAlreadyExistException || t instanceof ExchangeRateAlreadyExistException) {
-            handleAlreadyExistExceptions(res, t);
-        }
-    }
-
-    private static void handleAlreadyExistExceptions(HttpServletResponse res, Throwable t) {
-        try(PrintWriter writer = res.getWriter()) {
             res.setStatus(HttpServletResponse.SC_CONFLICT);
-            String excAsJson = jsonMapper.writeValueAsString(new ExceptionDto(t.getMessage()));
-            writer.println(excAsJson);
-        } catch(IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void handleNotFoundExceptions(HttpServletResponse res, Throwable t) {
-        try(PrintWriter writer = res.getWriter()) {
-            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            String excAsJson = jsonMapper.writeValueAsString(new ExceptionDto(t.getMessage()));
-            writer.println(excAsJson);
-        } catch(IOException e) {
-            throw new RuntimeException(e);
+        } else if (t instanceof RuntimeException) {
+            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } else {
+            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
