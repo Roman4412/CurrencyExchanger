@@ -20,16 +20,20 @@ public class CurrencyServlet extends HttpServlet {
     private final ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         String curCode = req.getPathInfo().substring(1);
         if (curCode.isBlank()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
             Currency currency = currencyService.getByCode(curCode);
-            String curAsJson = jsonMapper.writeValueAsString(currency);
-            PrintWriter writer = resp.getWriter();
-            writer.println(curAsJson);
-            writer.close();
+            try {
+                String curAsJson = jsonMapper.writeValueAsString(currency);
+                PrintWriter writer = resp.getWriter();
+                writer.println(curAsJson);
+                writer.close();
+            } catch(IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

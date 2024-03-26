@@ -21,15 +21,19 @@ public class CurrenciesServlet extends HttpServlet {
     private final ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         List<Currency> currencies = currencyService.getAll();
-        PrintWriter writer = resp.getWriter();
-        writer.println(jsonMapper.writeValueAsString(currencies));
-        writer.close();
+        try {
+            PrintWriter writer = resp.getWriter();
+            writer.println(jsonMapper.writeValueAsString(currencies));
+            writer.close();
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         String code = req.getParameter("code");
         String name = req.getParameter("name");
         String sign = req.getParameter("sign");
@@ -43,9 +47,13 @@ public class CurrenciesServlet extends HttpServlet {
 
             Currency createdCurrency = currencyService.save(currency);
             resp.setStatus(HttpServletResponse.SC_CREATED);
-            PrintWriter writer = resp.getWriter();
-            writer.println(jsonMapper.writeValueAsString(createdCurrency));
-            writer.close();
+            try {
+                PrintWriter writer = resp.getWriter();
+                writer.println(jsonMapper.writeValueAsString(createdCurrency));
+                writer.close();
+            } catch(IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

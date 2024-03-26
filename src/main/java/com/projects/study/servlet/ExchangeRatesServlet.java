@@ -28,15 +28,19 @@ public class ExchangeRatesServlet extends HttpServlet {
     private final ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        PrintWriter writer = resp.getWriter();
-        List<ExchangeRate> rates = exchangeRateService.getAll();
-        writer.println(jsonMapper.writeValueAsString(rates));
-        writer.close();
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            PrintWriter writer = resp.getWriter();
+            List<ExchangeRate> rates = exchangeRateService.getAll();
+            writer.println(jsonMapper.writeValueAsString(rates));
+            writer.close();
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         String baseCurCode = req.getParameter("baseCurCode");
         String targetCurCode = req.getParameter("targetCurCode");
         String rate = req.getParameter("rate");
@@ -49,13 +53,17 @@ public class ExchangeRatesServlet extends HttpServlet {
             newExchangeRate.setBaseCurrency(baseCur);
             newExchangeRate.setTargetCurrency(targetCur);
             newExchangeRate.setRate(new BigDecimal(rate));
-            ExchangeRate savedExchangeRate = exchangeRateService.save(newExchangeRate);
 
+            ExchangeRate savedExchangeRate = exchangeRateService.save(newExchangeRate);
             resp.setStatus(HttpServletResponse.SC_CREATED);
-            PrintWriter writer = resp.getWriter();
-            String rateAsJson = jsonMapper.writeValueAsString(savedExchangeRate);
-            writer.println(rateAsJson);
-            writer.close();
+            try {
+                PrintWriter writer = resp.getWriter();
+                String rateAsJson = jsonMapper.writeValueAsString(savedExchangeRate);
+                writer.println(rateAsJson);
+                writer.close();
+            } catch(IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
