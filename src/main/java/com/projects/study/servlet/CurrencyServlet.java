@@ -1,6 +1,5 @@
 package com.projects.study.servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projects.study.dao.CurrencyDao;
 import com.projects.study.dao.Dao;
 import com.projects.study.entity.Currency;
@@ -13,27 +12,25 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static com.projects.study.ControllerUtils.*;
+
+
 @WebServlet("/currency/*")
 public class CurrencyServlet extends HttpServlet {
     private final Dao<Currency> currencyDao = CurrencyDao.getInstance();
     private final CurrencyService currencyService = new CurrencyService(currencyDao);
-    private final ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        String curCode = req.getPathInfo().substring(1);
-        if (curCode.isBlank()) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        } else {
-            Currency currency = currencyService.getByCode(curCode);
-            try {
-                String curAsJson = jsonMapper.writeValueAsString(currency);
-                PrintWriter writer = resp.getWriter();
-                writer.println(curAsJson);
-                writer.close();
-            } catch(IOException e) {
-                throw new RuntimeException(e);
-            }
+        validatePathVar(req.getPathInfo());
+        String code = req.getPathInfo().substring(1);
+        Currency currency = currencyService.getByCode(code);
+        try {
+            PrintWriter writer = resp.getWriter();
+            writer.println(convertToJson(currency));
+            writer.close();
+        } catch(IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

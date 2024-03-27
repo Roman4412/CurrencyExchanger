@@ -29,14 +29,19 @@ public class ExchangerExceptionHandler {
     }
 
     private static void setResponseStatus(HttpServletResponse res, Throwable t) {
-        if (t instanceof CurrencyNotFoundException || t instanceof ExchangeRateNotFoundException) {
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        } else if (t instanceof CurrencyAlreadyExistException || t instanceof ExchangeRateAlreadyExistException) {
-            res.setStatus(HttpServletResponse.SC_CONFLICT);
-        } else if (t instanceof RuntimeException) {
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        } else {
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        switch(t.getClass().getSimpleName()) {
+            case "CurrencyNotFoundException":
+            case "ExchangeRateNotFoundException":
+            case "IllegalParameterException":
+                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                break;
+            case "CurrencyAlreadyExistException":
+            case "ExchangeRateAlreadyExistException":
+                res.setStatus(HttpServletResponse.SC_CONFLICT);
+                break;
+            case "RuntimeException":
+            default:
+                res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 

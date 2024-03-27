@@ -1,6 +1,5 @@
 package com.projects.study.servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projects.study.dao.CurrencyDao;
 import com.projects.study.dao.Dao;
 import com.projects.study.dao.ExchangeRateDao;
@@ -18,21 +17,21 @@ import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.projects.study.ControllerUtils.*;
+
 @WebServlet("/exchangeRates")
 public class ExchangeRatesServlet extends HttpServlet {
     Dao<ExchangeRate> exchangeRateDao = ExchangeRateDao.getInstance();
     Dao<Currency> currencyDao = CurrencyDao.getInstance();
-
     CurrencyService currencyService = new CurrencyService(currencyDao);
     ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateDao);
-    private final ObjectMapper jsonMapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        List<ExchangeRate> rates = exchangeRateService.getAll();
         try {
             PrintWriter writer = resp.getWriter();
-            List<ExchangeRate> rates = exchangeRateService.getAll();
-            writer.println(jsonMapper.writeValueAsString(rates));
+            writer.println(convertToJson(rates));
             writer.close();
         } catch(IOException e) {
             throw new RuntimeException(e);
@@ -41,29 +40,26 @@ public class ExchangeRatesServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        String baseCurCode = req.getParameter("baseCurCode");
-        String targetCurCode = req.getParameter("targetCurCode");
+        validateParams(req.getParameterMap());
+        String baseCurCode = formatParam(req.getParameter("baseCurCode"));
+        String targetCurCode = formatParam(req.getParameter("targetCurCode"));
         String rate = req.getParameter("rate");
-        if (baseCurCode.isBlank() || targetCurCode.isBlank() || rate.isBlank()) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        } else {
-            ExchangeRate newExchangeRate = new ExchangeRate();
-            Currency baseCur = currencyService.getByCode(baseCurCode);
-            Currency targetCur = currencyService.getByCode(targetCurCode);
-            newExchangeRate.setBaseCurrency(baseCur);
-            newExchangeRate.setTargetCurrency(targetCur);
-            newExchangeRate.setRate(new BigDecimal(rate));
 
-            ExchangeRate savedExchangeRate = exchangeRateService.save(newExchangeRate);
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-            try {
-                PrintWriter writer = resp.getWriter();
-                String rateAsJson = jsonMapper.writeValueAsString(savedExchangeRate);
-                writer.println(rateAsJson);
-                writer.close();
-            } catch(IOException e) {
-                throw new RuntimeException(e);
-            }
+        ExchangeRate newExchangeRate = new ExchangeRate();
+        Currency baseCur = currencyService.getByCode(baseCurCode);
+        Currency targetCur = currencyService.getByCode(targetCurCode);
+        newExchangeRate.setBaseCurrency(baseCur);
+        newExchangeRate.setTargetCurrency(targetCur);
+        newExchangeRate.setRate(new BigDecimal(rate));
+
+        ExchangeRate savedExchangeRate = exchangeRateService.save(newExchangeRate);
+        resp.setStatus(HttpServletResponse.SC_CREATED);
+        try {
+            PrintWriter writer = resp.getWriter();
+            writer.println(convertToJson(savedExchangeRate));
+            writer.close();
+        } catch(IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -27,11 +27,11 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
     }
 
     @Override
-    public Optional<ExchangeRate> getByCode(String curPair) {
+    public Optional<ExchangeRate> getByCode(String code) {
         ExchangeRate rate = null;
 
-        String firstCur = curPair.substring(0, 3);
-        String secondCur = curPair.substring(3, 6);
+        String firstCur = code.substring(0, 3);
+        String secondCur = code.substring(3, 6);
         try(Connection connection = DbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(RATE_GET_BY_CUR_PAIR)) {
 
@@ -43,7 +43,6 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
                 Currency bCurrency = new Currency();
                 Currency tCurrency = new Currency();
                 rate = new ExchangeRate();
-
                 rate.setId(resultSet.getLong(ID));
 
                 bCurrency.setId(resultSet.getLong(RATES_BASE_CUR_ID));
@@ -59,7 +58,6 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
                 rate.setRate(new BigDecimal(resultSet.getString(RATES_RATE)));
                 rate.setBaseCurrency(bCurrency);
                 rate.setTargetCurrency(tCurrency);
-
             }
         } catch(SQLException e) {
             e.printStackTrace();
