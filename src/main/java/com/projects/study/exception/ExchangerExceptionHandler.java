@@ -32,6 +32,8 @@ public class ExchangerExceptionHandler {
         switch(t.getClass().getSimpleName()) {
             case "CurrencyNotFoundException":
             case "ExchangeRateNotFoundException":
+                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                break;
             case "IllegalParameterException":
                 res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 break;
