@@ -1,20 +1,20 @@
 package com.projects.study.dao;
 
 import com.projects.study.DbConnectionProvider;
-import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
+import com.projects.study.mapper.ExchangeRateMapper;
+import com.projects.study.mapper.ExchangerMapper;
 
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.projects.study.constant.ColumnLabels.*;
 import static com.projects.study.constant.SqlQueryConstants.*;
 
 public class ExchangeRateDao implements Dao<ExchangeRate> {
 
     private static ExchangeRateDao exchangeRateDAO;
+    private final ExchangerMapper<ExchangeRate> mapper = new ExchangeRateMapper();
 
     private ExchangeRateDao() {
     }
@@ -28,43 +28,17 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
 
     @Override
     public Optional<ExchangeRate> getByCode(String code) {
-        ExchangeRate rate = null;
-
         String firstCur = code.substring(0, 3);
         String secondCur = code.substring(3, 6);
         try(Connection connection = DbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(RATE_GET_BY_CUR_PAIR)) {
-
             pStmt.setString(1, firstCur);
             pStmt.setString(2, secondCur);
             ResultSet resultSet = pStmt.executeQuery();
-
-            while(resultSet.next()) {
-                Currency bCurrency = new Currency();
-                Currency tCurrency = new Currency();
-                rate = new ExchangeRate();
-                rate.setId(resultSet.getLong(ID));
-
-                bCurrency.setId(resultSet.getLong(RATES_BASE_CUR_ID));
-                bCurrency.setCode(resultSet.getString(RATES_BASE_CUR_CODE));
-                bCurrency.setFullName(resultSet.getString(RATES_BASE_CUR_NAME));
-                bCurrency.setSign(resultSet.getString(RATES_BASE_CUR_SIGN));
-
-                tCurrency.setId(resultSet.getLong(RATES_TARGET_CUR_ID));
-                tCurrency.setCode(resultSet.getString(RATES_TARGET_CUR_CODE));
-                tCurrency.setFullName(resultSet.getString(RATES_TARGET_CUR_NAME));
-                tCurrency.setSign(resultSet.getString(RATES_TARGET_CUR_SIGN));
-
-                rate.setRate(new BigDecimal(resultSet.getString(RATES_RATE)));
-                rate.setBaseCurrency(bCurrency);
-                rate.setTargetCurrency(tCurrency);
-            }
+            return Optional.ofNullable(mapper.toEntity(resultSet));
         } catch(SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
-
-        return Optional.ofNullable(rate);
     }
 
     @Override
@@ -74,29 +48,10 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
             Statement stmt = connection.createStatement();
             ResultSet resultSet = stmt.executeQuery(RATES_GET_ALL)) {
             while(resultSet.next()) {
-                ExchangeRate exchangeRate = new ExchangeRate();
-                Currency bCurrency = new Currency();
-                Currency tCurrency = new Currency();
-
-                bCurrency.setId(resultSet.getLong(RATES_BASE_CUR_ID));
-                bCurrency.setCode(resultSet.getString(RATES_BASE_CUR_CODE));
-                bCurrency.setFullName(resultSet.getString(RATES_BASE_CUR_NAME));
-                bCurrency.setSign(resultSet.getString(RATES_BASE_CUR_SIGN));
-
-                tCurrency.setId(resultSet.getLong(RATES_TARGET_CUR_ID));
-                tCurrency.setCode(resultSet.getString(RATES_TARGET_CUR_CODE));
-                tCurrency.setFullName(resultSet.getString(RATES_TARGET_CUR_NAME));
-                tCurrency.setSign(resultSet.getString(RATES_TARGET_CUR_SIGN));
-
-                exchangeRate.setId(resultSet.getLong(ID));
-                exchangeRate.setRate(new BigDecimal(resultSet.getString(RATES_RATE)));
-                exchangeRate.setBaseCurrency(bCurrency);
-                exchangeRate.setTargetCurrency(tCurrency);
-                builder.add(exchangeRate);
+                builder.add(mapper.toEntity(resultSet));
             }
             return builder.build();
         } catch(SQLException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -106,15 +61,13 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
     public ExchangeRate save(ExchangeRate exchangeRate) {
         try(Connection connection = DbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(RATE_SAVE)) {
-
-            ExchangeRate newExchangeRate = exchangeRate;
-            pStmt.setString(1, newExchangeRate.getBaseCurrency().getCode());
-            pStmt.setString(2, newExchangeRate.getTargetCurrency().getCode());
-            pStmt.setDouble(3, newExchangeRate.getRate().doubleValue());
+            pStmt.setString(1, exchangeRate.getBaseCurrency().getCode());
+            pStmt.setString(2, exchangeRate.getTargetCurrency().getCode());
+            pStmt.setDouble(3, exchangeRate.getRate().doubleValue());
             pStmt.execute();
             ResultSet resultSet = pStmt.getGeneratedKeys();
-            newExchangeRate.setId(resultSet.getLong(1));
-            return newExchangeRate;
+            exchangeRate.setId(resultSet.getLong(1));
+            return exchangeRate;
         } catch(SQLException e) {
             throw new RuntimeException(e);
         }
@@ -124,7 +77,6 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
     public boolean update(ExchangeRate rate) {
         try(Connection connection = DbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(RATE_UPDATE)) {
-
             pStmt.setLong(2, rate.getId());
             pStmt.setDouble(1, rate.getRate().doubleValue());
             return pStmt.execute();
