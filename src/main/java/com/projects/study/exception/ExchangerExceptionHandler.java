@@ -1,21 +1,21 @@
 package com.projects.study.exception;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projects.study.dto.ExceptionDto;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static com.projects.study.ControllerUtils.*;
+
 public class ExchangerExceptionHandler {
-    private static final ObjectMapper jsonMapper = new ObjectMapper();
 
     public static void handle(HttpServletResponse res, Throwable t) {
         PrintWriter writer = null;
         try {
             writer = res.getWriter();
             setResponseStatus(res, t);
-            String excAsJson = jsonMapper.writeValueAsString(new ExceptionDto(t.getMessage()));
+            String excAsJson = convertToJson(new ExceptionDto(t.getMessage()));
             writer.println(excAsJson);
         } catch(IOException e) {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
