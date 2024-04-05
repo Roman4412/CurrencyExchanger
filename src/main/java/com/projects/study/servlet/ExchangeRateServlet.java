@@ -40,7 +40,7 @@ public class ExchangeRateServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         validatePathVar(req.getPathInfo());
         String code = req.getPathInfo().substring(1);
-        ExchangeRate rate = exchangeRateService.getByCode(code);
+        ExchangeRate rate = exchangeRateService.get(code);
         try {
             PrintWriter writer = resp.getWriter();
             writer.println(convertToJson(rate));

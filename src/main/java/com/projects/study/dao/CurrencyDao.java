@@ -25,7 +25,7 @@ public class CurrencyDao implements Dao<Currency> {
     }
 
     @Override
-    public Optional<Currency> getByCode(String code) {
+    public Optional<Currency> get(String code) {
         try(Connection connection = DbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_CODE)) {
             pStmt.setString(1, code);
@@ -70,6 +70,17 @@ public class CurrencyDao implements Dao<Currency> {
     @Override
     public boolean update(Currency currency) {
         return false;
+    }
+
+    @Override
+    public boolean isExist(String code) {
+        try(Connection connection = DbConnectionProvider.get();
+            PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_CODE)) {
+            pStmt.setString(1, code);
+            return  pStmt.executeQuery().next();
+        } catch(SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

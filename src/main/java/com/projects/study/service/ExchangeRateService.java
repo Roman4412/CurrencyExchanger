@@ -19,14 +19,14 @@ public class ExchangeRateService {
         return dao.getAll().toList();
     }
 
-    public ExchangeRate getByCode(String code) {
-        return dao.getByCode(code).orElseThrow(
+    public ExchangeRate get(String code) {
+        return dao.get(code).orElseThrow(
                 () -> new ExchangeRateNotFoundException(String.format("Exchange rate with code %s not found", code)));
     }
 
     public ExchangeRate save(ExchangeRate exchangeRate) {
         String code = exchangeRate.getBaseCurrency().getCode() + exchangeRate.getTargetCurrency().getCode();
-        if (dao.getByCode(code).isPresent()) {
+        if (dao.get(code).isPresent()) {
             throw new ExchangeRateAlreadyExistException(
                     String.format("Exchange rate with code %s already exist", code));
         }
@@ -34,10 +34,14 @@ public class ExchangeRateService {
     }
 
     public ExchangeRate update(String code, String rate) {
-        ExchangeRate exchangeRate = getByCode(code);
+        ExchangeRate exchangeRate = get(code);
         exchangeRate.setRate(new BigDecimal(rate));
         dao.update(exchangeRate);
         return exchangeRate;
+    }
+
+    public boolean isExist(String code) {
+        return dao.isExist(code);
     }
 
 }

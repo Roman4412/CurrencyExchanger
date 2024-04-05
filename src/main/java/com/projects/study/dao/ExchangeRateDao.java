@@ -27,7 +27,7 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
     }
 
     @Override
-    public Optional<ExchangeRate> getByCode(String code) {
+    public Optional<ExchangeRate> get(String code) {
         String firstCur = code.substring(0, 3);
         String secondCur = code.substring(3, 6);
         try(Connection connection = DbConnectionProvider.get();
@@ -80,6 +80,20 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
             pStmt.setLong(2, rate.getId());
             pStmt.setDouble(1, rate.getRate().doubleValue());
             return pStmt.execute();
+        } catch(SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean isExist(String code) {
+        String firstCur = code.substring(0, 3);
+        String secondCur = code.substring(3, 6);
+        try(Connection connection = DbConnectionProvider.get();
+            PreparedStatement pStmt = connection.prepareStatement(RATE_GET_BY_CUR_PAIR)) {
+            pStmt.setString(1, firstCur);
+            pStmt.setString(2, secondCur);
+            return  pStmt.executeQuery().next();
         } catch(SQLException e) {
             throw new RuntimeException(e);
         }

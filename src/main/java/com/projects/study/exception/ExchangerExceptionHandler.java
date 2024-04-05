@@ -1,6 +1,6 @@
 package com.projects.study.exception;
 
-import com.projects.study.dto.ExceptionDto;
+import com.projects.study.dto.ExceptionResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class ExchangerExceptionHandler {
         try {
             writer = res.getWriter();
             setResponseStatus(res, t);
-            String excAsJson = convertToJson(new ExceptionDto(t.getMessage()));
+            String excAsJson = convertToJson(new ExceptionResponse(t.getMessage()));
             writer.println(excAsJson);
         } catch(IOException e) {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -35,6 +35,7 @@ public class ExchangerExceptionHandler {
                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 break;
             case "IllegalParameterException":
+            case "ConvertibleAmountException":
                 res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 break;
             case "CurrencyAlreadyExistException":

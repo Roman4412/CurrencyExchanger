@@ -24,7 +24,7 @@ public class CurrencyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         validatePathVar(req.getPathInfo());
         String code = req.getPathInfo().substring(1);
-        Currency currency = currencyService.getByCode(code);
+        Currency currency = currencyService.get(code);
         try {
             PrintWriter writer = resp.getWriter();
             writer.println(convertToJson(currency));

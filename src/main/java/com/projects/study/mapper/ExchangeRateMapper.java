@@ -58,8 +58,8 @@ public class ExchangeRateMapper implements ExchangerMapper<ExchangeRate> {
         String rate = params.get("rate")[0];
 
         ExchangeRate newExchangeRate = new ExchangeRate();
-        Currency baseCur = currencyService.getByCode(baseCurCode);
-        Currency targetCur = currencyService.getByCode(targetCurCode);
+        Currency baseCur = currencyService.get(baseCurCode);
+        Currency targetCur = currencyService.get(targetCurCode);
         newExchangeRate.setBaseCurrency(baseCur);
         newExchangeRate.setTargetCurrency(targetCur);
         newExchangeRate.setRate(new BigDecimal(rate));
