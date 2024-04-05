@@ -1,9 +1,12 @@
 package com.projects.study.servlet;
 
+import com.projects.study.dao.CurrencyDao;
 import com.projects.study.dao.ExchangerDao;
 import com.projects.study.dao.ExchangeRateDao;
 import com.projects.study.dto.ExchangeResponse;
+import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
+import com.projects.study.service.CurrencyService;
 import com.projects.study.service.ExchangeRateService;
 import com.projects.study.service.ExchangeService;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,9 +22,11 @@ import static com.projects.study.ControllerUtils.*;
 
 @WebServlet("/exchange")
 public class ExchangeServlet extends HttpServlet {
-    ExchangeService exchangeService = new ExchangeService();
-    ExchangerDao<ExchangeRate> exchangerDao = ExchangeRateDao.getInstance();
-    ExchangeRateService exchangeRateService = new ExchangeRateService(exchangerDao);
+    ExchangerDao<ExchangeRate> exchangeRateDao = ExchangeRateDao.getInstance();
+    ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateDao);
+    ExchangerDao<Currency> currencyDao = CurrencyDao.getInstance();
+    CurrencyService currencyService = new CurrencyService(currencyDao);
+    ExchangeService exchangeService = new ExchangeService(exchangeRateService, currencyService);
 
 
     @Override

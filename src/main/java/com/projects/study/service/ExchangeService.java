@@ -1,9 +1,5 @@
 package com.projects.study.service;
 
-import com.projects.study.dao.CurrencyDao;
-import com.projects.study.dao.ExchangerDao;
-import com.projects.study.dao.ExchangeRateDao;
-import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.exception.ConvertibleAmountException;
 import com.projects.study.exception.ExchangeRateNotFoundException;
@@ -13,10 +9,13 @@ import java.math.MathContext;
 
 public class ExchangeService {
     public static final String DEF_CUR_CODE = "USD";
-    ExchangerDao<ExchangeRate> exRateExchangerDao = ExchangeRateDao.getInstance();
-    ExchangeRateService exRateService = new ExchangeRateService(exRateExchangerDao);
-    ExchangerDao<Currency> currencyExchangerDao = CurrencyDao.getInstance();
-    CurrencyService currencyService = new CurrencyService(currencyExchangerDao);
+    ExchangeRateService exRateService;
+    CurrencyService currencyService;
+
+    public ExchangeService(ExchangeRateService exRateService, CurrencyService currencyService) {
+        this.exRateService = exRateService;
+        this.currencyService = currencyService;
+    }
 
     public BigDecimal exchange(String base, String target, BigDecimal amount) {
         if (amount.doubleValue() < 1) {
