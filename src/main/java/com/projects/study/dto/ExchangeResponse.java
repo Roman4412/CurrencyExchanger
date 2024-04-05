@@ -24,4 +24,16 @@ public class ExchangeResponse {
         this.convertedAmount = convertedAmount;
     }
 
+    public ExchangeRate getExchangeRate() {
+        return exchangeRate;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public BigDecimal getConvertedAmount() {
+        return convertedAmount;
+    }
+
 }
