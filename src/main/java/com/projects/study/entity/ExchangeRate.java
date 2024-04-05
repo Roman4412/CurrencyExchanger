@@ -8,13 +8,6 @@ public class ExchangeRate {
     private Currency targetCurrency;
     private BigDecimal rate;
 
-    public ExchangeRate(long id, Currency baseCurrency, Currency targetCurrency, BigDecimal rate) {
-        this.id = id;
-        this.baseCurrency = baseCurrency;
-        this.targetCurrency = targetCurrency;
-        this.rate = rate;
-    }
-
     public ExchangeRate() {
     }
 
@@ -52,9 +45,7 @@ public class ExchangeRate {
 
     @Override
     public String toString() {
-        return "ExchangeRate{" + "id=" + id
-                + ", baseCurrency=" + baseCurrency
-                + ", targetCurrency=" + targetCurrency
-                + ", rate=" + rate + '}';
+        return "ExchangeRate{" + "id=" + id + ", baseCurrency=" + baseCurrency + ", targetCurrency=" + targetCurrency + ", rate=" + rate + '}';
     }
+
 }

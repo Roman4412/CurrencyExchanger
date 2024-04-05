@@ -6,18 +6,7 @@ public class Currency {
     private String fullName;
     private String sign;
 
-    public Currency(long id, String code, String fullName, String sign) {
-        this.id = id;
-        this.code = code;
-        this.fullName = fullName;
-        this.sign = sign;
-    }
-
     public Currency() {
-    }
-
-    public long getId() {
-        return id;
     }
 
     public String getCode() {
@@ -50,9 +39,7 @@ public class Currency {
 
     @Override
     public String toString() {
-        return "Currency{" + "id=" + id
-                + ", code='" + code + '\''
-                + ", fullName='" + fullName + '\''
-                + ", sign='" + sign + '\'' + '}';
+        return "Currency{" + "id=" + id + ", code='" + code + '\'' + ", fullName='" + fullName + '\'' + ", sign='" + sign + '\'' + '}';
     }
+
 }
