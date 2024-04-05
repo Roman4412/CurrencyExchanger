@@ -10,7 +10,6 @@ import java.util.Map;
 public class ControllerUtils {
     public static void validateParams(Map<String, String[]> params) {
         for(String p : params.keySet()) {
-            System.out.println(params.get(p)[0]);
             if ((params.get(p)[0].isBlank() || params.get(p)[0] == null)) {
                 throw new IllegalParameterException(String.format("Missing parameter %s", p));
             }
