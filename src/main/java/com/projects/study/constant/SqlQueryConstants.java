@@ -30,7 +30,7 @@ public class SqlQueryConstants {
                      JOIN currencies baseCurrency ON er.base_currency_id = baseCurrency.id
                      JOIN currencies targetCurrency ON er.target_currency_id = targetCurrency.id;
             """;
-    public static final String RATE_GET_BY_CUR_PAIR = """
+    public static final String RATE_GET_BY_CODE = """
             SELECT er.id,
                    er.base_currency_id AS base_id,
                    baseCurrency.code AS base_code,

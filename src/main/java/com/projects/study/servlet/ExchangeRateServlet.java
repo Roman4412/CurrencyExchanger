@@ -1,6 +1,6 @@
 package com.projects.study.servlet;
 
-import com.projects.study.dao.Dao;
+import com.projects.study.dao.ExchangerDao;
 import com.projects.study.dao.ExchangeRateDao;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.service.ExchangeRateService;
@@ -16,8 +16,8 @@ import static com.projects.study.ControllerUtils.*;
 
 @WebServlet("/exchangeRate/*")
 public class ExchangeRateServlet extends HttpServlet {
-    private final Dao<ExchangeRate> dao = ExchangeRateDao.getInstance();
-    private final ExchangeRateService exchangeRateService = new ExchangeRateService(dao);
+    private final ExchangerDao<ExchangeRate> exchangerDao = ExchangeRateDao.getInstance();
+    private final ExchangeRateService exchangeRateService = new ExchangeRateService(exchangerDao);
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {

@@ -1,6 +1,5 @@
 package com.projects.study.dao;
 
-import com.projects.study.DbConnectionProvider;
 import com.projects.study.entity.Currency;
 import com.projects.study.mapper.CurrencyMapper;
 
@@ -10,7 +9,7 @@ import java.util.stream.Stream;
 
 import static com.projects.study.constant.SqlQueryConstants.*;
 
-public class CurrencyDao implements Dao<Currency> {
+public class CurrencyDao implements ExchangerDao<Currency> {
     private static CurrencyDao currencyDAO;
     private static final CurrencyMapper mapper = new CurrencyMapper();
 
@@ -26,7 +25,7 @@ public class CurrencyDao implements Dao<Currency> {
 
     @Override
     public Optional<Currency> get(String code) {
-        try(Connection connection = DbConnectionProvider.get();
+        try(Connection connection = ExchangerDbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_CODE)) {
             pStmt.setString(1, code);
             ResultSet resultSet = pStmt.executeQuery();
@@ -39,7 +38,7 @@ public class CurrencyDao implements Dao<Currency> {
     @Override
     public Stream<Currency> getAll() {
         Stream.Builder<Currency> currencies = Stream.builder();
-        try(Connection connection = DbConnectionProvider.get();
+        try(Connection connection = ExchangerDbConnectionProvider.get();
             Statement stmt = connection.createStatement();
             ResultSet resultSet = stmt.executeQuery(CUR_GET_ALL)) {
             while(resultSet.next()) {
@@ -53,7 +52,7 @@ public class CurrencyDao implements Dao<Currency> {
 
     @Override
     public Currency save(Currency currency) {
-        try(Connection connection = DbConnectionProvider.get();
+        try(Connection connection = ExchangerDbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(CUR_SAVE)) {
             pStmt.setString(1, currency.getCode());
             pStmt.setString(2, currency.getFullName());
@@ -74,7 +73,7 @@ public class CurrencyDao implements Dao<Currency> {
 
     @Override
     public boolean isExist(String code) {
-        try(Connection connection = DbConnectionProvider.get();
+        try(Connection connection = ExchangerDbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_CODE)) {
             pStmt.setString(1, code);
             return  pStmt.executeQuery().next();

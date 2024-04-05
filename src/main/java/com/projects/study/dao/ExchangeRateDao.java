@@ -1,6 +1,5 @@
 package com.projects.study.dao;
 
-import com.projects.study.DbConnectionProvider;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.mapper.ExchangeRateMapper;
 import com.projects.study.mapper.ExchangerMapper;
@@ -11,7 +10,7 @@ import java.util.stream.Stream;
 
 import static com.projects.study.constant.SqlQueryConstants.*;
 
-public class ExchangeRateDao implements Dao<ExchangeRate> {
+public class ExchangeRateDao implements ExchangerDao<ExchangeRate> {
 
     private static ExchangeRateDao exchangeRateDAO;
     private final ExchangerMapper<ExchangeRate> mapper = new ExchangeRateMapper();
@@ -30,8 +29,8 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
     public Optional<ExchangeRate> get(String code) {
         String firstCur = code.substring(0, 3);
         String secondCur = code.substring(3, 6);
-        try(Connection connection = DbConnectionProvider.get();
-            PreparedStatement pStmt = connection.prepareStatement(RATE_GET_BY_CUR_PAIR)) {
+        try(Connection connection = ExchangerDbConnectionProvider.get();
+            PreparedStatement pStmt = connection.prepareStatement(RATE_GET_BY_CODE)) {
             pStmt.setString(1, firstCur);
             pStmt.setString(2, secondCur);
             ResultSet resultSet = pStmt.executeQuery();
@@ -44,7 +43,7 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
     @Override
     public Stream<ExchangeRate> getAll() {
         Stream.Builder<ExchangeRate> builder = Stream.builder();
-        try(Connection connection = DbConnectionProvider.get();
+        try(Connection connection = ExchangerDbConnectionProvider.get();
             Statement stmt = connection.createStatement();
             ResultSet resultSet = stmt.executeQuery(RATES_GET_ALL)) {
             while(resultSet.next()) {
@@ -59,7 +58,7 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
 
     @Override
     public ExchangeRate save(ExchangeRate exchangeRate) {
-        try(Connection connection = DbConnectionProvider.get();
+        try(Connection connection = ExchangerDbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(RATE_SAVE)) {
             pStmt.setString(1, exchangeRate.getBaseCurrency().getCode());
             pStmt.setString(2, exchangeRate.getTargetCurrency().getCode());
@@ -75,7 +74,7 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
 
     @Override
     public boolean update(ExchangeRate rate) {
-        try(Connection connection = DbConnectionProvider.get();
+        try(Connection connection = ExchangerDbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(RATE_UPDATE)) {
             pStmt.setLong(2, rate.getId());
             pStmt.setDouble(1, rate.getRate().doubleValue());
@@ -89,8 +88,8 @@ public class ExchangeRateDao implements Dao<ExchangeRate> {
     public boolean isExist(String code) {
         String firstCur = code.substring(0, 3);
         String secondCur = code.substring(3, 6);
-        try(Connection connection = DbConnectionProvider.get();
-            PreparedStatement pStmt = connection.prepareStatement(RATE_GET_BY_CUR_PAIR)) {
+        try(Connection connection = ExchangerDbConnectionProvider.get();
+            PreparedStatement pStmt = connection.prepareStatement(RATE_GET_BY_CODE)) {
             pStmt.setString(1, firstCur);
             pStmt.setString(2, secondCur);
             return  pStmt.executeQuery().next();

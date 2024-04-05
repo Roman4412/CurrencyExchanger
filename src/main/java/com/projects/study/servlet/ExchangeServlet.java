@@ -1,6 +1,6 @@
 package com.projects.study.servlet;
 
-import com.projects.study.dao.Dao;
+import com.projects.study.dao.ExchangerDao;
 import com.projects.study.dao.ExchangeRateDao;
 import com.projects.study.dto.ExchangeResponse;
 import com.projects.study.entity.ExchangeRate;
@@ -20,8 +20,8 @@ import static com.projects.study.ControllerUtils.*;
 @WebServlet("/exchange")
 public class ExchangeServlet extends HttpServlet {
     ExchangeService exchangeService = new ExchangeService();
-    Dao<ExchangeRate> dao = ExchangeRateDao.getInstance();
-    ExchangeRateService exchangeRateService = new ExchangeRateService(dao);
+    ExchangerDao<ExchangeRate> exchangerDao = ExchangeRateDao.getInstance();
+    ExchangeRateService exchangeRateService = new ExchangeRateService(exchangerDao);
 
 
     @Override

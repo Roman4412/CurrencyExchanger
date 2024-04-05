@@ -1,6 +1,6 @@
 package com.projects.study.service;
 
-import com.projects.study.dao.Dao;
+import com.projects.study.dao.ExchangerDao;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.exception.ExchangeRateAlreadyExistException;
 import com.projects.study.exception.ExchangeRateNotFoundException;
@@ -9,39 +9,39 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class ExchangeRateService {
-    Dao<ExchangeRate> dao;
+    ExchangerDao<ExchangeRate> exchangerDao;
 
-    public ExchangeRateService(Dao<ExchangeRate> dao) {
-        this.dao = dao;
+    public ExchangeRateService(ExchangerDao<ExchangeRate> exchangerDao) {
+        this.exchangerDao = exchangerDao;
     }
 
     public List<ExchangeRate> getAll() {
-        return dao.getAll().toList();
+        return exchangerDao.getAll().toList();
     }
 
     public ExchangeRate get(String code) {
-        return dao.get(code).orElseThrow(
+        return exchangerDao.get(code).orElseThrow(
                 () -> new ExchangeRateNotFoundException(String.format("Exchange rate with code %s not found", code)));
     }
 
     public ExchangeRate save(ExchangeRate exchangeRate) {
         String code = exchangeRate.getBaseCurrency().getCode() + exchangeRate.getTargetCurrency().getCode();
-        if (dao.get(code).isPresent()) {
+        if (exchangerDao.get(code).isPresent()) {
             throw new ExchangeRateAlreadyExistException(
                     String.format("Exchange rate with code %s already exist", code));
         }
-        return dao.save(exchangeRate);
+        return exchangerDao.save(exchangeRate);
     }
 
     public ExchangeRate update(String code, String rate) {
         ExchangeRate exchangeRate = get(code);
         exchangeRate.setRate(new BigDecimal(rate));
-        dao.update(exchangeRate);
+        exchangerDao.update(exchangeRate);
         return exchangeRate;
     }
 
     public boolean isExist(String code) {
-        return dao.isExist(code);
+        return exchangerDao.isExist(code);
     }
 
 }

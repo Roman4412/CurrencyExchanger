@@ -1,7 +1,7 @@
 package com.projects.study.service;
 
 import com.projects.study.dao.CurrencyDao;
-import com.projects.study.dao.Dao;
+import com.projects.study.dao.ExchangerDao;
 import com.projects.study.dao.ExchangeRateDao;
 import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
@@ -13,10 +13,10 @@ import java.math.MathContext;
 
 public class ExchangeService {
     public static final String DEF_CUR_CODE = "USD";
-    Dao<ExchangeRate> exRateDao = ExchangeRateDao.getInstance();
-    ExchangeRateService exRateService = new ExchangeRateService(exRateDao);
-    Dao<Currency> currencyDao = CurrencyDao.getInstance();
-    CurrencyService currencyService = new CurrencyService(currencyDao);
+    ExchangerDao<ExchangeRate> exRateExchangerDao = ExchangeRateDao.getInstance();
+    ExchangeRateService exRateService = new ExchangeRateService(exRateExchangerDao);
+    ExchangerDao<Currency> currencyExchangerDao = CurrencyDao.getInstance();
+    CurrencyService currencyService = new CurrencyService(currencyExchangerDao);
 
     public BigDecimal exchange(String base, String target, BigDecimal amount) {
         if (amount.doubleValue() < 1) {

@@ -1,7 +1,7 @@
 package com.projects.study.servlet;
 
 import com.projects.study.dao.CurrencyDao;
-import com.projects.study.dao.Dao;
+import com.projects.study.dao.ExchangerDao;
 import com.projects.study.entity.Currency;
 import com.projects.study.mapper.CurrencyMapper;
 import com.projects.study.mapper.ExchangerMapper;
@@ -20,8 +20,8 @@ import static com.projects.study.ControllerUtils.*;
 
 @WebServlet("/currencies")
 public class CurrenciesServlet extends HttpServlet {
-    private final Dao<Currency> currencyDao = CurrencyDao.getInstance();
-    private final CurrencyService currencyService = new CurrencyService(currencyDao);
+    private final ExchangerDao<Currency> currencyExchangerDao = CurrencyDao.getInstance();
+    private final CurrencyService currencyService = new CurrencyService(currencyExchangerDao);
     ExchangerMapper<Currency> mapper = new CurrencyMapper();
 
     @Override

@@ -1,11 +1,11 @@
-package com.projects.study;
+package com.projects.study.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
-public class DbConnectionProvider {
+public class ExchangerDbConnectionProvider {
     private static final String URL = "jdbc:sqlite:E:/programs/python/Scripts/currency_exchanger_db.db";
     private static Connection connection;
 
@@ -13,7 +13,7 @@ public class DbConnectionProvider {
         loadDriver();
     }
 
-    private DbConnectionProvider() {
+    private ExchangerDbConnectionProvider() {
     }
 
     private static void initConnection() {

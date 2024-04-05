@@ -3,7 +3,7 @@ package com.projects.study.dao;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public interface Dao<T> {
+public interface ExchangerDao<T> {
     Optional<T> get(String code);
 
     Stream<T> getAll();
