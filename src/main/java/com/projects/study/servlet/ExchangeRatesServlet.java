@@ -1,10 +1,13 @@
 package com.projects.study.servlet;
 
+import com.projects.study.dao.CurrencyDao;
 import com.projects.study.dao.ExchangerDao;
 import com.projects.study.dao.ExchangeRateDao;
+import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.mapper.ExchangeRateMapper;
 import com.projects.study.mapper.ExchangerMapper;
+import com.projects.study.service.CurrencyService;
 import com.projects.study.service.ExchangeRateService;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -22,7 +25,9 @@ import static com.projects.study.ControllerUtils.*;
 public class ExchangeRatesServlet extends HttpServlet {
     ExchangerDao<ExchangeRate> exchangeRateExchangerDao = ExchangeRateDao.getInstance();
     ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateExchangerDao);
-    ExchangerMapper<ExchangeRate> mapper = new ExchangeRateMapper();
+    ExchangerDao<Currency> currencyDao = CurrencyDao.getInstance();
+    CurrencyService currencyService = new CurrencyService(currencyDao);
+    ExchangerMapper<ExchangeRate> mapper = new ExchangeRateMapper(currencyService);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {

@@ -1,7 +1,5 @@
 package com.projects.study.mapper;
 
-import com.projects.study.dao.CurrencyDao;
-import com.projects.study.dao.ExchangerDao;
 import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.service.CurrencyService;
@@ -16,8 +14,12 @@ import static com.projects.study.constant.ColumnLabels.*;
 import static com.projects.study.constant.ColumnLabels.RATES_RATE;
 
 public class ExchangeRateMapper implements ExchangerMapper<ExchangeRate> {
-    private final ExchangerDao<Currency> currencyExchangerDao = CurrencyDao.getInstance();
-    private final CurrencyService currencyService = new CurrencyService(currencyExchangerDao);
+    private final CurrencyService currencyService;
+
+    public ExchangeRateMapper(CurrencyService currencyService) {
+        this.currencyService = currencyService;
+
+    }
 
     @Override
     public ExchangeRate toEntity(ResultSet resultSet) {
@@ -41,7 +43,6 @@ public class ExchangeRateMapper implements ExchangerMapper<ExchangeRate> {
                 rate.setRate(new BigDecimal(resultSet.getString(RATES_RATE)));
                 rate.setBaseCurrency(bCurrency);
                 rate.setTargetCurrency(tCurrency);
-                System.out.println(rate);
                 return rate;
             } else {
                 return null;

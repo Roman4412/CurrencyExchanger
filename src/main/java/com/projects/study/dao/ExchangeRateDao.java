@@ -1,8 +1,10 @@
 package com.projects.study.dao;
 
+import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.mapper.ExchangeRateMapper;
 import com.projects.study.mapper.ExchangerMapper;
+import com.projects.study.service.CurrencyService;
 
 import java.sql.*;
 import java.util.Optional;
@@ -13,7 +15,9 @@ import static com.projects.study.constant.SqlQueryConstants.*;
 public class ExchangeRateDao implements ExchangerDao<ExchangeRate> {
 
     private static ExchangeRateDao exchangeRateDAO;
-    private final ExchangerMapper<ExchangeRate> mapper = new ExchangeRateMapper();
+    ExchangerDao<Currency> currencyDao = CurrencyDao.getInstance();
+    CurrencyService currencyService = new CurrencyService(currencyDao);
+    private final ExchangerMapper<ExchangeRate> mapper = new ExchangeRateMapper(currencyService);
 
     private ExchangeRateDao() {
     }
@@ -92,7 +96,7 @@ public class ExchangeRateDao implements ExchangerDao<ExchangeRate> {
             PreparedStatement pStmt = connection.prepareStatement(RATE_GET_BY_CODE)) {
             pStmt.setString(1, firstCur);
             pStmt.setString(2, secondCur);
-            return  pStmt.executeQuery().next();
+            return pStmt.executeQuery().next();
         } catch(SQLException e) {
             throw new RuntimeException(e);
         }
