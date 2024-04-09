@@ -9,10 +9,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
-import static com.projects.study.ControllerUtils.*;
+import static com.projects.study.util.ControllerUtils.*;
+import static com.projects.study.util.ValidatorUtils.*;
 
 @WebServlet("/exchangeRate/*")
 public class ExchangeRateServlet extends HttpServlet {
@@ -21,33 +22,20 @@ public class ExchangeRateServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
-        validateParams(req.getParameterMap());
-        validatePathVar(req.getPathInfo());
-        String code = req.getPathInfo().substring(1);
-        String rate = req.getParameter("rate");
-        System.out.println(rate);
+        validateForNull(req.getParameterMap());
+        String code = parsePathVar(req).toUpperCase().trim();
+        BigDecimal rate = new BigDecimal(req.getParameter("rate")
+                .replace(',', '.')
+                .trim(), MathContext.DECIMAL32);
         ExchangeRate updatedRate = exchangeRateService.update(code, rate);
-        try {
-            PrintWriter writer = resp.getWriter();
-            writer.println(convertToJson(updatedRate));
-            writer.close();
-        } catch(IOException e) {
-            throw new RuntimeException(e);
-        }
+        sendResponse(convertToJson(updatedRate), resp);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        validatePathVar(req.getPathInfo());
-        String code = req.getPathInfo().substring(1);
+        String code = parsePathVar(req).toUpperCase().trim();
         ExchangeRate rate = exchangeRateService.get(code);
-        try {
-            PrintWriter writer = resp.getWriter();
-            writer.println(convertToJson(rate));
-            writer.close();
-        } catch(IOException e) {
-            throw new RuntimeException(e);
-        }
+        sendResponse(convertToJson(rate), resp);
     }
 
 }

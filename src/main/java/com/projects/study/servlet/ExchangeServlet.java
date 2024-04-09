@@ -14,11 +14,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
-import static com.projects.study.ControllerUtils.*;
+import static com.projects.study.util.ControllerUtils.*;
+import static com.projects.study.util.ValidatorUtils.*;
 
 @WebServlet("/exchange")
 public class ExchangeServlet extends HttpServlet {
@@ -31,22 +32,17 @@ public class ExchangeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        validateParams(req.getParameterMap());
-        String base = req.getParameter("base");
-        String target = req.getParameter("target");
-        BigDecimal amount = new BigDecimal(req.getParameter("amount"));
-
-
+        validateForNull(req.getParameterMap());
+        String base = req.getParameter("base").trim();
+        String target = req.getParameter("target").trim();
+        BigDecimal amount = new BigDecimal(req.getParameter("amount").trim().replace(',', '.'));
+        //builder for response
         BigDecimal converted = exchangeService.exchange(base, target, amount);
         ExchangeResponse response = new ExchangeResponse();
         response.setExchangeRate(exchangeRateService.get(base + target));
         response.setAmount(amount);
         response.setConvertedAmount(converted);
-        try(PrintWriter writer = resp.getWriter()) {
-            writer.println(convertToJson(response));
-        } catch(IOException e) {
-            throw new RuntimeException(e);
-        }
+        sendResponse(convertToJson(response), resp);
     }
 
 }

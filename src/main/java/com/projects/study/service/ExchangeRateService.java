@@ -4,9 +4,13 @@ import com.projects.study.dao.ExchangerDao;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.exception.ExchangeRateAlreadyExistException;
 import com.projects.study.exception.ExchangeRateNotFoundException;
+import com.projects.study.exception.IllegalParameterException;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import static com.projects.study.constant.ValidatorKit.*;
+import static com.projects.study.util.ValidatorUtils.*;
 
 public class ExchangeRateService {
     ExchangerDao<ExchangeRate> exchangerDao;
@@ -20,24 +24,38 @@ public class ExchangeRateService {
     }
 
     public ExchangeRate get(String code) {
-        return exchangerDao.get(code).orElseThrow(
-                () -> new ExchangeRateNotFoundException(String.format("Exchange rate with code %s not found", code)));
+        if (isValidCode(RATE_CODE_PATTERN, code)) {
+            return exchangerDao.get(code).orElseThrow(() -> new ExchangeRateNotFoundException(
+                    String.format("Exchange rate with code %s not found", code)));
+        } else {
+            throw new IllegalParameterException("exchange rate code must consist of 6 latin letters");
+        }
+
     }
 
     public ExchangeRate save(ExchangeRate exchangeRate) {
-        String code = exchangeRate.getBaseCurrency().getCode() + exchangeRate.getTargetCurrency().getCode();
-        if (exchangerDao.get(code).isPresent()) {
-            throw new ExchangeRateAlreadyExistException(
-                    String.format("Exchange rate with code %s already exist", code));
+        if(isValidRate(exchangeRate.getRate())) {
+            String code = exchangeRate.getBaseCurrency().getCode() + exchangeRate.getTargetCurrency().getCode();
+            if (exchangerDao.get(code).isPresent()) {
+                throw new ExchangeRateAlreadyExistException(
+                        String.format("Exchange rate with code %s already exist", code));
+            }
+            return exchangerDao.save(exchangeRate);
+        } else {
+            throw new IllegalParameterException("the rate must be greater than zero");
         }
-        return exchangerDao.save(exchangeRate);
     }
 
-    public ExchangeRate update(String code, String rate) {
-        ExchangeRate exchangeRate = get(code);
-        exchangeRate.setRate(new BigDecimal(rate));
-        exchangerDao.update(exchangeRate);
-        return exchangeRate;
+    public ExchangeRate update(String code, BigDecimal rate) {
+        if (isValidCode(RATE_CODE_PATTERN, code) && isValidRate(rate)) {
+            ExchangeRate exchangeRate = get(code);
+            exchangeRate.setRate(rate);
+            exchangerDao.update(exchangeRate);
+            return exchangeRate;
+        } else {
+            throw new IllegalParameterException("code or rate is not valid");
+        }
+
     }
 
     public boolean isExist(String code) {

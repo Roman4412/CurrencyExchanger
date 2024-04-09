@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.projects.study.ControllerUtils.*;
+import static com.projects.study.util.ControllerUtils.*;
 
 public class ExchangerExceptionHandler {
 

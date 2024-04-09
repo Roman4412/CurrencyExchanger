@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.projects.study.constant.SqlQueryConstants.*;
+import static com.projects.study.constant.DaoKit.*;
 
 public class CurrencyDao implements ExchangerDao<Currency> {
     private static CurrencyDao currencyDAO;

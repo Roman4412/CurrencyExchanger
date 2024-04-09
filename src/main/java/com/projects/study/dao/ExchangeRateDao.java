@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.projects.study.constant.SqlQueryConstants.*;
+import static com.projects.study.constant.DaoKit.*;
 
 public class ExchangeRateDao implements ExchangerDao<ExchangeRate> {
 

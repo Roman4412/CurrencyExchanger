@@ -11,12 +11,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
-import static com.projects.study.ControllerUtils.*;
+import static com.projects.study.util.ControllerUtils.*;
+import static com.projects.study.util.ValidatorUtils.*;
 
 @WebServlet("/currencies")
 public class CurrenciesServlet extends HttpServlet {
@@ -27,28 +26,16 @@ public class CurrenciesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         List<Currency> currencies = currencyService.getAll();
-        try {
-            PrintWriter writer = resp.getWriter();
-            writer.println(convertToJson(currencies));
-            writer.close();
-        } catch(IOException e) {
-            throw new RuntimeException(e);
-        }
+        sendResponse(convertToJson(currencies), resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         Map<String, String[]> params = req.getParameterMap();
-        validateParams(params);
+        validateForNull(params);
         Currency currency = currencyService.save(mapper.toEntity(params));
         resp.setStatus(HttpServletResponse.SC_CREATED);
-        try {
-            PrintWriter writer = resp.getWriter();
-            writer.println(convertToJson(currency));
-            writer.close();
-        } catch(IOException e) {
-            throw new RuntimeException(e);
-        }
+        sendResponse(convertToJson(currency), resp);
     }
 
 }

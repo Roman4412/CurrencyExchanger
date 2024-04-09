@@ -1,11 +1,14 @@
 package com.projects.study.service;
 
 import com.projects.study.entity.ExchangeRate;
-import com.projects.study.exception.ConvertibleAmountException;
 import com.projects.study.exception.ExchangeRateNotFoundException;
+import com.projects.study.exception.IllegalParameterException;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
+
+import static com.projects.study.util.ValidatorUtils.*;
 
 public class ExchangeService {
     public static final String DEF_CUR_CODE = "USD";
@@ -18,9 +21,10 @@ public class ExchangeService {
     }
 
     public BigDecimal exchange(String base, String target, BigDecimal amount) {
-        if (amount.doubleValue() < 1) {
-            throw new ConvertibleAmountException("the amount mast be at least 1");
+        if (!isValidAmount(amount)) {
+            throw new IllegalParameterException("the amount must be greater than zero and have no more than two decimal places");
         }
+
         BigDecimal convertedAmount;
         if (exRateService.isExist(base + target)) {
             BigDecimal rate = exRateService.get(base + target).getRate();
@@ -49,7 +53,7 @@ public class ExchangeService {
         } else {
             throw new ExchangeRateNotFoundException("course not found and cannot be created");
         }
-        return convertedAmount;
+        return convertedAmount.setScale(2, RoundingMode.HALF_EVEN);
     }
 
 }

@@ -9,9 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-import static com.projects.study.ControllerUtils.formatParam;
-import static com.projects.study.constant.ColumnLabels.*;
-import static com.projects.study.constant.ColumnLabels.RATES_RATE;
+import static com.projects.study.util.ControllerUtils.formatParam;
+import static com.projects.study.constant.DaoKit.*;
 
 public class ExchangeRateMapper implements ExchangerMapper<ExchangeRate> {
     private final CurrencyService currencyService;
@@ -54,9 +53,10 @@ public class ExchangeRateMapper implements ExchangerMapper<ExchangeRate> {
 
     @Override
     public ExchangeRate toEntity(Map<String, String[]> params) {
-        String baseCurCode = formatParam(params.get("baseCurCode")[0]);
-        String targetCurCode = formatParam(params.get("targetCurCode")[0]);
-        String rate = params.get("rate")[0];
+        String baseCurCode = formatParam(params.get("baseCurCode")[0]).toUpperCase().trim();
+        String targetCurCode = formatParam(params.get("targetCurCode")[0].toUpperCase().trim());
+        String rate = params.get("rate")[0].replace(',', '.')
+                .trim();
 
         ExchangeRate newExchangeRate = new ExchangeRate();
         Currency baseCur = currencyService.get(baseCurCode);
