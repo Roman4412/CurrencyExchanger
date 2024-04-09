@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+import static com.projects.study.constant.ValidatorKit.*;
 import static com.projects.study.util.ValidatorUtils.*;
 
 public class ExchangeService {
@@ -22,7 +23,10 @@ public class ExchangeService {
 
     public BigDecimal exchange(String base, String target, BigDecimal amount) {
         if (!isValidAmount(amount)) {
-            throw new IllegalParameterException("the amount must be greater than zero and have no more than two decimal places");
+            throw new IllegalParameterException(
+                    "the amount must be greater than zero and have no more than two decimal places");
+        } else if (!isValidCode(CUR_CODE_PATTERN, base) || !isValidCode(CUR_CODE_PATTERN, target)) {
+            throw new IllegalParameterException("currency code must consist of 3 latin letters");
         }
 
         BigDecimal convertedAmount;
@@ -51,7 +55,7 @@ public class ExchangeService {
             newExchangeRate.setRate(baseTargetRate);
             exRateService.save(newExchangeRate);
         } else {
-            throw new ExchangeRateNotFoundException("course not found and cannot be created");
+            throw new ExchangeRateNotFoundException("course not found and can't be calculated");
         }
         return convertedAmount.setScale(2, RoundingMode.HALF_EVEN);
     }
