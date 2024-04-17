@@ -24,7 +24,7 @@ public class ExchangeRateService {
     }
 
     public ExchangeRate get(String code) {
-        if (isValidCode(RATE_CODE_PATTERN, code)) {
+        if (isValidString(RATE_CODE_PATTERN, code)) {
             return exchangerDao.get(code).orElseThrow(() -> new ExchangeRateNotFoundException(
                     String.format("Exchange rate with code %s not found", code)));
         } else {
@@ -47,7 +47,7 @@ public class ExchangeRateService {
     }
 
     public ExchangeRate update(String code, BigDecimal rate) {
-        if (isValidCode(RATE_CODE_PATTERN, code) && isValidRate(rate)) {
+        if (isValidString(RATE_CODE_PATTERN, code) && isValidRate(rate)) {
             ExchangeRate exchangeRate = get(code);
             exchangeRate.setRate(rate);
             exchangerDao.update(exchangeRate);

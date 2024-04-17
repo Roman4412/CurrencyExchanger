@@ -53,8 +53,8 @@ public class ExchangeRateMapper implements ExchangerMapper<ExchangeRate> {
 
     @Override
     public ExchangeRate toEntity(Map<String, String[]> params) {
-        String baseCurCode = formatParam(params.get("baseCurCode")[0]).toUpperCase().trim();
-        String targetCurCode = formatParam(params.get("targetCurCode")[0].toUpperCase().trim());
+        String baseCurCode = formatParam(params.get("baseCurrencyCode")[0]).toUpperCase().trim();
+        String targetCurCode = formatParam(params.get("targetCurrencyCode")[0].toUpperCase().trim());
         String rate = params.get("rate")[0].replace(',', '.')
                 .trim();
 

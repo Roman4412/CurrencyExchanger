@@ -23,7 +23,7 @@ public class CurrencyService {
     }
 
     public Currency get(String code) {
-        if (isValidCode(CUR_CODE_PATTERN, code)) {
+        if (isValidString(CUR_CODE_PATTERN, code)) {
             return exchangerDao.get(code).orElseThrow(
                     () -> new CurrencyNotFoundException(String.format("Currency with code %s not found", code)));
         } else {
@@ -44,7 +44,7 @@ public class CurrencyService {
     }
 
     public boolean isExist(String code) {
-        if (isValidCode(CUR_CODE_PATTERN, code)) {
+        if (isValidString(CUR_CODE_PATTERN, code)) {
             return exchangerDao.isExist(code);
         } else {
             throw new IllegalParameterException("currency code must consist of 3 latin letters");

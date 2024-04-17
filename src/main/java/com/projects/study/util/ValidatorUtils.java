@@ -9,12 +9,14 @@ import java.math.MathContext;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static com.projects.study.constant.ValidatorKit.*;
+
 
 public final class ValidatorUtils {
     private ValidatorUtils() {
     }
 
-    public static boolean isValidCode(String pattern, String param) {
+    public static boolean isValidString(String pattern, String param) {
         return Pattern.matches(pattern, param);
     }
 
@@ -24,17 +26,17 @@ public final class ValidatorUtils {
         String sign = currency.getSign();
 
         return name.length() <= ValidatorKit.CUR_NAME_MAX_SIZE
-               && isValidCode(ValidatorKit.CUR_CODE_PATTERN, code)
+               && isValidString(ValidatorKit.CUR_CODE_PATTERN, code)
                && sign.length() <= ValidatorKit.CUR_SIGN_MAX_SIZE;
     }
 
     public static boolean isValidRate(BigDecimal rate) {
-        return rate.compareTo(new BigDecimal("0.1", MathContext.DECIMAL32)) >= 0;
+        return rate.compareTo(new BigDecimal(RATE_MIN, MathContext.DECIMAL32)) >= 0;
     }
 
-    public static boolean isValidAmount(BigDecimal rate) {
-        return rate.compareTo(new BigDecimal("0.1", MathContext.DECIMAL32)) >= 0
-               && rate.scale() <= 2;
+    public static boolean isValidAmount(BigDecimal amount) {
+        return amount.compareTo(new BigDecimal(AMOUNT_MIN, MathContext.DECIMAL32)) >= 0
+               && amount.scale() <= 2;
     }
 
     public static void validateForNull(Map<String, String[]> params) {

@@ -25,7 +25,7 @@ public class ExchangeService {
         if (!isValidAmount(amount)) {
             throw new IllegalParameterException(
                     "the amount must be greater than zero and have no more than two decimal places");
-        } else if (!isValidCode(CUR_CODE_PATTERN, base) || !isValidCode(CUR_CODE_PATTERN, target)) {
+        } else if (!isValidString(CUR_CODE_PATTERN, base) || !isValidString(CUR_CODE_PATTERN, target)) {
             throw new IllegalParameterException("currency code must consist of 3 latin letters");
         }
 

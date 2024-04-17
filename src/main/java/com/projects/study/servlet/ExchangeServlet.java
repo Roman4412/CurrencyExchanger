@@ -6,6 +6,7 @@ import com.projects.study.dao.ExchangeRateDao;
 import com.projects.study.dto.ExchangeResponse;
 import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
+import com.projects.study.exception.IllegalParameterException;
 import com.projects.study.service.CurrencyService;
 import com.projects.study.service.ExchangeRateService;
 import com.projects.study.service.ExchangeService;
@@ -15,9 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 
+import static com.projects.study.constant.ValidatorKit.RATE_NUM_PATTERN;
 import static com.projects.study.util.ControllerUtils.*;
 import static com.projects.study.util.ValidatorUtils.*;
 
@@ -33,16 +33,24 @@ public class ExchangeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         validateForNull(req.getParameterMap());
-        String base = req.getParameter("base").trim();
-        String target = req.getParameter("target").trim();
-        BigDecimal amount = new BigDecimal(req.getParameter("amount").trim().replace(',', '.'));
-        //builder for response
-        BigDecimal converted = exchangeService.exchange(base, target, amount);
-        ExchangeResponse response = new ExchangeResponse();
-        response.setExchangeRate(exchangeRateService.get(base + target));
-        response.setAmount(amount);
-        response.setConvertedAmount(converted);
-        sendResponse(convertToJson(response), resp);
+        String from = req.getParameter("from").trim();
+        String to = req.getParameter("to").trim();
+        String amountStr = req.getParameter("amount");
+        System.out.println(amountStr);
+        System.out.println(isValidString(RATE_NUM_PATTERN, amountStr));
+        if (!isValidString(RATE_NUM_PATTERN, amountStr)) {
+            throw new IllegalParameterException("некорректный ввод");
+        } else {
+
+            BigDecimal amount = new BigDecimal(amountStr.trim().replace(',', '.'));
+            //builder for response
+            BigDecimal converted = exchangeService.exchange(from, to, amount);
+            ExchangeResponse response = new ExchangeResponse();
+            response.setExchangeRate(exchangeRateService.get(from + to));
+            response.setAmount(amount);
+            response.setConvertedAmount(converted);
+            sendResponse(convertToJson(response), resp);
+        }
     }
 
 }
