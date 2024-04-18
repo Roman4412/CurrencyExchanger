@@ -2,7 +2,7 @@ package com.projects.study.service;
 
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.exception.ExchangeRateNotFoundException;
-import com.projects.study.exception.IllegalParameterException;
+import com.projects.study.exception.InvalidParameterException;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -23,10 +23,10 @@ public class ExchangeService {
 
     public BigDecimal exchange(String base, String target, BigDecimal amount) {
         if (!isValidAmount(amount)) {
-            throw new IllegalParameterException(
+            throw new InvalidParameterException(
                     "the amount must be greater than zero and have no more than two decimal places");
         } else if (!isValidString(CUR_CODE_PATTERN, base) || !isValidString(CUR_CODE_PATTERN, target)) {
-            throw new IllegalParameterException("currency code must consist of 3 latin letters");
+            throw new InvalidParameterException("currency code must consist of 3 latin letters");
         }
 
         BigDecimal convertedAmount;

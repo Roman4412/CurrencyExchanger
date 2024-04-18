@@ -34,7 +34,7 @@ public class ExchangerExceptionHandler {
             case "ExchangeRateNotFoundException":
                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 break;
-            case "IllegalParameterException":
+            case "InvalidParameterException":
             case "ConvertibleAmountException":
                 res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 break;

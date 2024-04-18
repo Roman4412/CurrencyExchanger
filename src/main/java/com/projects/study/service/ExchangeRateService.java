@@ -4,7 +4,7 @@ import com.projects.study.dao.ExchangerDao;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.exception.ExchangeRateAlreadyExistException;
 import com.projects.study.exception.ExchangeRateNotFoundException;
-import com.projects.study.exception.IllegalParameterException;
+import com.projects.study.exception.InvalidParameterException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,7 +28,7 @@ public class ExchangeRateService {
             return exchangerDao.get(code).orElseThrow(() -> new ExchangeRateNotFoundException(
                     String.format("Exchange rate with code %s not found", code)));
         } else {
-            throw new IllegalParameterException("exchange rate code must consist of 6 latin letters");
+            throw new InvalidParameterException("exchange rate code must consist of 6 latin letters");
         }
 
     }
@@ -42,7 +42,7 @@ public class ExchangeRateService {
             }
             return exchangerDao.save(exchangeRate);
         } else {
-            throw new IllegalParameterException("the rate must be greater than zero");
+            throw new InvalidParameterException("the rate must be greater than zero");
         }
     }
 
@@ -53,7 +53,7 @@ public class ExchangeRateService {
             exchangerDao.update(exchangeRate);
             return exchangeRate;
         } else {
-            throw new IllegalParameterException("code or rate is not valid");
+            throw new InvalidParameterException("code or rate is not valid");
         }
 
     }

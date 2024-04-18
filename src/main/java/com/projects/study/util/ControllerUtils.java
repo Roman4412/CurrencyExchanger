@@ -3,7 +3,7 @@ package com.projects.study.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.projects.study.exception.IllegalParameterException;
+import com.projects.study.exception.InvalidParameterException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -48,7 +48,7 @@ public final class ControllerUtils {
 
     private static void pathVarValidate(String path) {
         if (path == null || path.substring(1).isBlank()) {
-            throw new IllegalParameterException("Missing code in the query string");
+            throw new InvalidParameterException("Missing code in the query string");
         }
     }
 

@@ -6,7 +6,7 @@ import com.projects.study.dao.ExchangeRateDao;
 import com.projects.study.dto.ExchangeResponse;
 import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
-import com.projects.study.exception.IllegalParameterException;
+import com.projects.study.exception.InvalidParameterException;
 import com.projects.study.service.CurrencyService;
 import com.projects.study.service.ExchangeRateService;
 import com.projects.study.service.ExchangeService;
@@ -39,7 +39,7 @@ public class ExchangeServlet extends HttpServlet {
         System.out.println(amountStr);
         System.out.println(isValidString(RATE_NUM_PATTERN, amountStr));
         if (!isValidString(RATE_NUM_PATTERN, amountStr)) {
-            throw new IllegalParameterException("некорректный ввод");
+            throw new InvalidParameterException("некорректный ввод");
         } else {
 
             BigDecimal amount = new BigDecimal(amountStr.trim().replace(',', '.'));

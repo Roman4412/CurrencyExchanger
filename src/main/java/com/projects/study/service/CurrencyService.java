@@ -4,7 +4,7 @@ import com.projects.study.dao.ExchangerDao;
 import com.projects.study.entity.Currency;
 import com.projects.study.exception.CurrencyAlreadyExistException;
 import com.projects.study.exception.CurrencyNotFoundException;
-import com.projects.study.exception.IllegalParameterException;
+import com.projects.study.exception.InvalidParameterException;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class CurrencyService {
             return exchangerDao.get(code).orElseThrow(
                     () -> new CurrencyNotFoundException(String.format("Currency with code %s not found", code)));
         } else {
-            throw new IllegalParameterException("currency code must consist of 3 latin letters");
+            throw new InvalidParameterException("currency code must consist of 3 latin letters");
         }
     }
 
@@ -39,7 +39,7 @@ public class CurrencyService {
             }
             return exchangerDao.save(currency);
         } else {
-            throw new IllegalParameterException("Currency is not valid");
+            throw new InvalidParameterException("Currency is not valid");
         }
     }
 
@@ -47,7 +47,7 @@ public class CurrencyService {
         if (isValidString(CUR_CODE_PATTERN, code)) {
             return exchangerDao.isExist(code);
         } else {
-            throw new IllegalParameterException("currency code must consist of 3 latin letters");
+            throw new InvalidParameterException("currency code must consist of 3 latin letters");
         }
     }
 

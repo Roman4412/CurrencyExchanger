@@ -2,7 +2,7 @@ package com.projects.study.util;
 
 import com.projects.study.constant.ValidatorKit;
 import com.projects.study.entity.Currency;
-import com.projects.study.exception.IllegalParameterException;
+import com.projects.study.exception.InvalidParameterException;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -42,7 +42,7 @@ public final class ValidatorUtils {
     public static void validateForNull(Map<String, String[]> params) {
         for(String p : params.keySet()) {
             if ((params.get(p)[0].isBlank() || params.get(p)[0] == null)) {
-                throw new IllegalParameterException(String.format("Missing parameter %s", p));
+                throw new InvalidParameterException(String.format("Missing parameter %s", p));
             }
         }
     }
