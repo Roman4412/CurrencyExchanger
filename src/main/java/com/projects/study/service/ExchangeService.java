@@ -5,12 +5,11 @@ import com.projects.study.entity.ExchangeRate;
 import com.projects.study.exception.ExchangeRateNotFoundException;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 
 
 public class ExchangeService {
-    public static final String DEF_CUR_CODE = "USD";
+    public static final String DEFAULT_CUR_CODE = "USD";
     ExchangeRateService exRateService;
     CurrencyService currencyService;
 
@@ -19,37 +18,48 @@ public class ExchangeService {
         this.currencyService = currencyService;
     }
 
-    public BigDecimal exchange(String base, String target, BigDecimal amount) {
+    public BigDecimal exchange(String from, String to, BigDecimal amount) {
         BigDecimal convertedAmount;
+        String directExCode = from + to;
+        String reverseExCode = to + from;
+        String defaultBaseCode = DEFAULT_CUR_CODE + from;
+        String defaultTargetCode = DEFAULT_CUR_CODE + to;
 
-        if (exRateService.isExist(base + target)) {
-            BigDecimal rate = exRateService.get(base + target).getRate();
+        if (exRateService.isExist(directExCode)) {
+            BigDecimal rate = exRateService.get(directExCode).getRate();
             convertedAmount = amount.multiply(rate);
-        } else if (exRateService.isExist(target + base)) {
-            BigDecimal rate = exRateService.get(target + base).getRate();
-            BigDecimal newRate = BigDecimal.ONE.divide(rate, MathContext.DECIMAL32);
-            convertedAmount = amount.multiply(newRate);
-
-            ExchangeRate newExchangeRate = new ExchangeRate();
-            newExchangeRate.setBaseCurrency(currencyService.get(base));
-            newExchangeRate.setTargetCurrency(currencyService.get(target));
-            newExchangeRate.setRate(newRate);
-            exRateService.save(newExchangeRate);
-        } else if (exRateService.isExist(DEF_CUR_CODE + base) && exRateService.isExist(DEF_CUR_CODE + target)) {
-            BigDecimal defBaseRate = exRateService.get(DEF_CUR_CODE + base).getRate();
-            BigDecimal defTargetRate = exRateService.get(DEF_CUR_CODE + target).getRate();
-            BigDecimal baseTargetRate = defBaseRate.divide(defTargetRate, MathContext.DECIMAL32);
-            convertedAmount = amount.multiply(baseTargetRate);
-
-            ExchangeRate newExchangeRate = new ExchangeRate();
-            newExchangeRate.setBaseCurrency(currencyService.get(base));
-            newExchangeRate.setTargetCurrency(currencyService.get(target));
-            newExchangeRate.setRate(baseTargetRate);
-            exRateService.save(newExchangeRate);
+        } else if (exRateService.isExist(reverseExCode)) {
+            BigDecimal reverseRate = calculateReverseRate(reverseExCode);
+            convertedAmount = amount.multiply(reverseRate);
+            saveExchangeRate(from, to, reverseRate);
+        } else if (exRateService.isExist(defaultBaseCode) && exRateService.isExist(defaultTargetCode)) {
+            BigDecimal crossRate = calculateCrossRate(defaultBaseCode, defaultTargetCode);
+            convertedAmount = amount.multiply(crossRate);
+            saveExchangeRate(from, to, crossRate);
         } else {
             throw new ExchangeRateNotFoundException(ExceptionMessage.EX_CANT_EXCHANGE);
         }
         return convertedAmount.setScale(2, RoundingMode.HALF_EVEN);
+    }
+
+    private BigDecimal calculateReverseRate(String code) {
+        BigDecimal rate = exRateService.get(code).getRate();
+        return BigDecimal.ONE.divide(rate, 4, RoundingMode.HALF_EVEN);
+
+    }
+
+    private BigDecimal calculateCrossRate(String defBaseCode, String defTargetCode) {
+        BigDecimal defBaseRate = exRateService.get(defBaseCode).getRate();
+        BigDecimal defTargetRate = exRateService.get(defTargetCode).getRate();
+        return defBaseRate.divide(defTargetRate, 4, RoundingMode.HALF_EVEN);
+    }
+
+    private void saveExchangeRate(String base, String target, BigDecimal rate) {
+        ExchangeRate newExchangeRate = new ExchangeRate();
+        newExchangeRate.setBaseCurrency(currencyService.get(base));
+        newExchangeRate.setTargetCurrency(currencyService.get(target));
+        newExchangeRate.setRate(rate);
+        exRateService.save(newExchangeRate);
     }
 
 }
