@@ -15,8 +15,7 @@ public class ExchangerExceptionHandler {
         try {
             writer = res.getWriter();
             setResponseStatus(res, t);
-            String excAsJson = convertToJson(new ExceptionResponse(t.getMessage()));
-            writer.println(excAsJson);
+            writer.println(convertToJson(new ExceptionResponse(t.getMessage())));
         } catch(IOException e) {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             throw new RuntimeException(e);

@@ -3,7 +3,6 @@ package com.projects.study.service;
 import com.projects.study.constant.ExceptionMessage;
 import com.projects.study.dao.ExchangerDao;
 import com.projects.study.entity.ExchangeRate;
-import com.projects.study.exception.ExchangeRateAlreadyExistException;
 import com.projects.study.exception.ExchangeRateNotFoundException;
 
 import java.math.BigDecimal;
@@ -27,11 +26,6 @@ public class ExchangeRateService {
     }
 
     public ExchangeRate save(ExchangeRate exchangeRate) {
-        String code = exchangeRate.getBaseCurrency().getCode() + exchangeRate.getTargetCurrency().getCode();
-        if (exchangerDao.get(code).isPresent()) {
-            throw new ExchangeRateAlreadyExistException(
-                    String.format(ExceptionMessage.FORMATTED_ER_EXIST, code));
-        }
         return exchangerDao.save(exchangeRate);
     }
 

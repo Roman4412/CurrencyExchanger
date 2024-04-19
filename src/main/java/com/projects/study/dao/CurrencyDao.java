@@ -1,6 +1,8 @@
 package com.projects.study.dao;
 
+import com.projects.study.constant.ExceptionMessage;
 import com.projects.study.entity.Currency;
+import com.projects.study.exception.CurrencyAlreadyExistException;
 import com.projects.study.mapper.CurrencyMapper;
 
 import java.sql.*;
@@ -59,9 +61,13 @@ public class CurrencyDao implements ExchangerDao<Currency> {
             pStmt.setString(3, currency.getSign());
             pStmt.execute();
             ResultSet resultSet = pStmt.getGeneratedKeys();
-            currency.setId(resultSet.getLong(ID));
+            currency.setId(resultSet.getLong(1));
             return currency;
         } catch(SQLException e) {
+            if (e.getErrorCode() == CONSTRAINT_ERR_CODE) {
+                throw new CurrencyAlreadyExistException(
+                        String.format(ExceptionMessage.FORMATTED_CUR_EXIST, currency.getCode()));
+            }
             throw new RuntimeException(e);
         }
     }
@@ -76,7 +82,7 @@ public class CurrencyDao implements ExchangerDao<Currency> {
         try(Connection connection = ExchangerDbConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_CODE)) {
             pStmt.setString(1, code);
-            return  pStmt.executeQuery().next();
+            return pStmt.executeQuery().next();
         } catch(SQLException e) {
             throw new RuntimeException(e);
         }

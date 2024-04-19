@@ -66,12 +66,13 @@ public final class DaoKit {
     public static final String RATES_BASE_CUR_ID = "base_id";
     public static final String RATES_BASE_CUR_CODE = "base_code";
     public static final String RATES_BASE_CUR_NAME = "base_name";
-    public static final String RATES_BASE_CUR_SIGN= "base_sign";
+    public static final String RATES_BASE_CUR_SIGN = "base_sign";
     public static final String RATES_TARGET_CUR_ID = "target_id";
     public static final String RATES_TARGET_CUR_CODE = "target_code";
     public static final String RATES_TARGET_CUR_NAME = "target_name";
-    public static final String RATES_TARGET_CUR_SIGN= "target_sign";
+    public static final String RATES_TARGET_CUR_SIGN = "target_sign";
     public static final String RATES_RATE = "rate";
+    public static final int CONSTRAINT_ERR_CODE = 19;
 
     private DaoKit() {
     }

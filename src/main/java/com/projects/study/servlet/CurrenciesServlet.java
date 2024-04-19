@@ -37,7 +37,6 @@ public class CurrenciesServlet extends HttpServlet {
         String code = req.getParameter(RequestParams.CUR_CODE);
         String name = req.getParameter(RequestParams.CUR_NAME);
         String sign = req.getParameter(RequestParams.CUR_SIGN);
-
         if (!isValidString(CUR_CODE_REGEX, code)) {
             throw new InvalidParameterException(ExceptionMessage.INVALID_CURRENCY_CODE);
         } else if (!isValidString(CUR_NAME_REGEX, name)) {

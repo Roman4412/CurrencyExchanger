@@ -26,10 +26,6 @@ public class CurrencyService {
     }
 
     public Currency save(Currency currency) {
-        if (exchangerDao.get(currency.getCode()).isPresent()) {
-            throw new CurrencyAlreadyExistException(
-                    String.format(ExceptionMessage.FORMATTED_CUR_EXIST, currency.getCode()));
-        }
         return exchangerDao.save(currency);
     }
 

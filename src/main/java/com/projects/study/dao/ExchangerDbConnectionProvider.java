@@ -1,39 +1,29 @@
 package com.projects.study.dao;
 
+
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
 public class ExchangerDbConnectionProvider {
     private static final String URL = "jdbc:sqlite:E:/programs/python/Scripts/currency_exchanger_db.db";
-    private static Connection connection;
+    private static final HikariDataSource ds = new HikariDataSource();
 
     static {
-        loadDriver();
+        ds.setDriverClassName("org.sqlite.JDBC");
+        ds.setJdbcUrl(URL);
+        ds.setMaximumPoolSize(15);
     }
 
     private ExchangerDbConnectionProvider() {
     }
 
-    private static void initConnection() {
-        try {
-            connection = DriverManager.getConnection(URL);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
     public static Connection get() {
-        initConnection();
-        return connection;
-    }
-
-    private static void loadDriver() {
         try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
+            return ds.getConnection();
+        } catch(SQLException e) {
             throw new RuntimeException(e);
         }
     }

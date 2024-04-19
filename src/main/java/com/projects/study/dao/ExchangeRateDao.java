@@ -1,7 +1,9 @@
 package com.projects.study.dao;
 
+import com.projects.study.constant.ExceptionMessage;
 import com.projects.study.entity.Currency;
 import com.projects.study.entity.ExchangeRate;
+import com.projects.study.exception.CurrencyAlreadyExistException;
 import com.projects.study.mapper.ExchangeRateMapper;
 import com.projects.study.mapper.ExchangerMapper;
 import com.projects.study.service.CurrencyService;
@@ -69,9 +71,13 @@ public class ExchangeRateDao implements ExchangerDao<ExchangeRate> {
             pStmt.setDouble(3, exchangeRate.getRate().doubleValue());
             pStmt.execute();
             ResultSet resultSet = pStmt.getGeneratedKeys();
-            exchangeRate.setId(resultSet.getLong(ID));
+            exchangeRate.setId(resultSet.getLong(1));
             return exchangeRate;
         } catch(SQLException e) {
+            if (e.getErrorCode() == CONSTRAINT_ERR_CODE) {
+                throw new CurrencyAlreadyExistException(String.format(ExceptionMessage.FORMATTED_ER_EXIST,
+                        exchangeRate.getBaseCurrency().getCode() + exchangeRate.getTargetCurrency().getCode()));
+            }
             throw new RuntimeException(e);
         }
     }
