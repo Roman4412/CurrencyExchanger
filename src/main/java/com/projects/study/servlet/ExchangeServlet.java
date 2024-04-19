@@ -1,5 +1,7 @@
 package com.projects.study.servlet;
 
+import com.projects.study.constant.ExceptionMessage;
+import com.projects.study.constant.RequestParams;
 import com.projects.study.dao.CurrencyDao;
 import com.projects.study.dao.ExchangerDao;
 import com.projects.study.dao.ExchangeRateDao;
@@ -17,9 +19,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.math.BigDecimal;
 
-import static com.projects.study.constant.ValidatorKit.RATE_NUM_PATTERN;
+import static com.projects.study.constant.ValidatorKit.*;
 import static com.projects.study.util.ControllerUtils.*;
-import static com.projects.study.util.ValidatorUtils.*;
+
 
 @WebServlet("/exchange")
 public class ExchangeServlet extends HttpServlet {
@@ -32,22 +34,21 @@ public class ExchangeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        validateForNull(req.getParameterMap());
-        String from = req.getParameter("from").trim();
-        String to = req.getParameter("to").trim();
-        String amountStr = req.getParameter("amount");
-        System.out.println(amountStr);
-        System.out.println(isValidString(RATE_NUM_PATTERN, amountStr));
-        if (!isValidString(RATE_NUM_PATTERN, amountStr)) {
-            throw new InvalidParameterException("некорректный ввод");
-        } else {
+        String from = req.getParameter(RequestParams.EX_FROM);
+        String to = req.getParameter(RequestParams.EX_TO);
+        String amount = req.getParameter(RequestParams.EX_AMOUNT);
 
-            BigDecimal amount = new BigDecimal(amountStr.trim().replace(',', '.'));
-            //builder for response
-            BigDecimal converted = exchangeService.exchange(from, to, amount);
+        if (!isValidString(CUR_CODE_REGEX, from, to)) {
+            throw new InvalidParameterException(ExceptionMessage.INVALID_CURRENCY_CODE);
+        } else if (!isValidDecimalInString(amount, EX_MIN_AMOUNT, EX_AMOUNT_REGEX)) {
+            throw new InvalidParameterException(
+                    String.format(ExceptionMessage.FORMATTED_INVALID_AMOUNT, EX_MIN_AMOUNT));
+        } else {
+            BigDecimal amountDec = new BigDecimal(amount.replace(",", "."));
+            BigDecimal converted = exchangeService.exchange(from, to, amountDec);
             ExchangeResponse response = new ExchangeResponse();
             response.setExchangeRate(exchangeRateService.get(from + to));
-            response.setAmount(amount);
+            response.setAmount(amountDec);
             response.setConvertedAmount(converted);
             sendResponse(convertToJson(response), resp);
         }

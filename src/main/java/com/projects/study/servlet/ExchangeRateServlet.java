@@ -1,8 +1,11 @@
 package com.projects.study.servlet;
 
+import com.projects.study.constant.ExceptionMessage;
+import com.projects.study.constant.RequestParams;
 import com.projects.study.dao.ExchangerDao;
 import com.projects.study.dao.ExchangeRateDao;
 import com.projects.study.entity.ExchangeRate;
+import com.projects.study.exception.InvalidParameterException;
 import com.projects.study.service.ExchangeRateService;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,10 +13,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
+import static com.projects.study.constant.ValidatorKit.*;
 import static com.projects.study.util.ControllerUtils.*;
-import static com.projects.study.util.ValidatorUtils.*;
+
 
 @WebServlet("/exchangeRate/*")
 public class ExchangeRateServlet extends HttpServlet {
@@ -22,18 +25,27 @@ public class ExchangeRateServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
-        validateForNull(req.getParameterMap());
-        String code = parsePathVar(req).toUpperCase().trim();
-        BigDecimal rate = new BigDecimal(req.getParameter("rate")
-                .replace(',', '.')
-                .trim(), MathContext.DECIMAL32);
-        ExchangeRate updatedRate = exchangeRateService.update(code, rate);
-        sendResponse(convertToJson(updatedRate), resp);
+        String code = parsePathVar(req);
+        String rate = req.getParameter(RequestParams.ER_RATE);
+        if (!isValidString(ER_CODE_REGEX, code)) {
+            throw new InvalidParameterException(ExceptionMessage.INVALID_ER_CODE);
+        } else if (!isValidDecimalInString(rate, ER_MIN_RATE, ER_RATE_REGEX)) {
+            throw new InvalidParameterException(
+                    String.format(ExceptionMessage.FORMATTED_INVALID_RATE,
+                            ER_MIN_RATE));
+        } else {
+            ExchangeRate updatedRate = exchangeRateService.update(code, new BigDecimal(rate));
+            sendResponse(convertToJson(updatedRate), resp);
+        }
+
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        String code = parsePathVar(req).toUpperCase().trim();
+        String code = parsePathVar(req);
+        if (!isValidString(code, ER_CODE_REGEX)) {
+            throw new InvalidParameterException(ExceptionMessage.INVALID_ER_CODE);
+        }
         ExchangeRate rate = exchangeRateService.get(code);
         sendResponse(convertToJson(rate), resp);
     }

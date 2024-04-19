@@ -1,15 +1,13 @@
 package com.projects.study.service;
 
+import com.projects.study.constant.ExceptionMessage;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.exception.ExchangeRateNotFoundException;
-import com.projects.study.exception.InvalidParameterException;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import static com.projects.study.constant.ValidatorKit.*;
-import static com.projects.study.util.ValidatorUtils.*;
 
 public class ExchangeService {
     public static final String DEF_CUR_CODE = "USD";
@@ -22,14 +20,8 @@ public class ExchangeService {
     }
 
     public BigDecimal exchange(String base, String target, BigDecimal amount) {
-        if (!isValidAmount(amount)) {
-            throw new InvalidParameterException(
-                    "the amount must be greater than zero and have no more than two decimal places");
-        } else if (!isValidString(CUR_CODE_PATTERN, base) || !isValidString(CUR_CODE_PATTERN, target)) {
-            throw new InvalidParameterException("currency code must consist of 3 latin letters");
-        }
-
         BigDecimal convertedAmount;
+
         if (exRateService.isExist(base + target)) {
             BigDecimal rate = exRateService.get(base + target).getRate();
             convertedAmount = amount.multiply(rate);
@@ -55,7 +47,7 @@ public class ExchangeService {
             newExchangeRate.setRate(baseTargetRate);
             exRateService.save(newExchangeRate);
         } else {
-            throw new ExchangeRateNotFoundException("course not found and can't be calculated");
+            throw new ExchangeRateNotFoundException(ExceptionMessage.EX_CANT_EXCHANGE);
         }
         return convertedAmount.setScale(2, RoundingMode.HALF_EVEN);
     }

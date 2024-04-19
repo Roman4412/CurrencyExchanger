@@ -1,6 +1,6 @@
 package com.projects.study.constant;
 
-public class DaoKit {
+public final class DaoKit {
     public static final String CUR_GET_BY_CODE = """
             SELECT *
             FROM currencies
@@ -72,5 +72,8 @@ public class DaoKit {
     public static final String RATES_TARGET_CUR_NAME = "target_name";
     public static final String RATES_TARGET_CUR_SIGN= "target_sign";
     public static final String RATES_RATE = "rate";
+
+    private DaoKit() {
+    }
 
 }

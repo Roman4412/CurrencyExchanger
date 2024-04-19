@@ -1,12 +1,12 @@
 package com.projects.study.mapper;
 
+import com.projects.study.constant.RequestParams;
 import com.projects.study.entity.Currency;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-import static com.projects.study.util.ControllerUtils.formatParam;
 import static com.projects.study.constant.DaoKit.*;
 
 public class CurrencyMapper implements ExchangerMapper<Currency> {
@@ -31,9 +31,9 @@ public class CurrencyMapper implements ExchangerMapper<Currency> {
 
     @Override
     public Currency toEntity(Map<String, String[]> params) {
-        String code = formatParam(params.get("code")[0]).toUpperCase().trim();
-        String name = formatParam(params.get("name")[0]).trim();
-        String sign = formatParam(params.get("sign")[0]).toUpperCase().trim();
+        String code = params.get(RequestParams.CUR_CODE)[0].toUpperCase();
+        String name = params.get(RequestParams.CUR_NAME)[0];
+        String sign = params.get(RequestParams.CUR_SIGN)[0].toUpperCase();
 
         Currency currency = new Currency();
         currency.setCode(code);

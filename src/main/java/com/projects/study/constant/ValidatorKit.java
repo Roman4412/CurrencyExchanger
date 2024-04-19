@@ -1,12 +1,19 @@
 package com.projects.study.constant;
 
-public class ValidatorKit {
-    public static final String CUR_CODE_PATTERN = "^[a-zA-Z]{3}$";
-    public static final String RATE_CODE_PATTERN = "^[a-zA-Z]{6}$";
-    public static final String RATE_NUM_PATTERN = "^\\d+([,.]\\d{1,2})?$";
-    public static final int CUR_NAME_MAX_SIZE = 100;
-    public static final int CUR_SIGN_MAX_SIZE = 2;
-    public static final String RATE_MIN = "0.000001";
-    public static final String AMOUNT_MIN = "0.01";
+import java.math.BigDecimal;
+
+public final class ValidatorKit {
+    public static final String CUR_CODE_REGEX = "^[a-zA-Z]{3}$";
+    public static final String CUR_NAME_REGEX = "^[a-zA-Z]{3,100}$";
+    public static final String CUR_SIGN_REGEX = "^[a-zA-Z]{1,2}$";
+    public static final String ER_CODE_REGEX = "^[a-zA-Z]{6}$";
+    public static final String ER_RATE_REGEX = "^\\d+(?:[\\.,]\\d{0,4})?$";
+    public static final String EX_AMOUNT_REGEX = "^\\d+(?:[\\.,]\\d{0,2})?$";
+    public static final BigDecimal ER_MIN_RATE = new BigDecimal("0.0001");
+    public static final BigDecimal EX_MIN_AMOUNT = new BigDecimal("0.01");
+
+    private ValidatorKit() {
+    }
 
 }
+

@@ -1,15 +1,13 @@
 package com.projects.study.service;
 
+import com.projects.study.constant.ExceptionMessage;
 import com.projects.study.dao.ExchangerDao;
 import com.projects.study.entity.Currency;
 import com.projects.study.exception.CurrencyAlreadyExistException;
 import com.projects.study.exception.CurrencyNotFoundException;
-import com.projects.study.exception.InvalidParameterException;
 
 import java.util.List;
 
-import static com.projects.study.constant.ValidatorKit.*;
-import static com.projects.study.util.ValidatorUtils.*;
 
 public class CurrencyService {
     ExchangerDao<Currency> exchangerDao;
@@ -23,32 +21,21 @@ public class CurrencyService {
     }
 
     public Currency get(String code) {
-        if (isValidString(CUR_CODE_PATTERN, code)) {
-            return exchangerDao.get(code).orElseThrow(
-                    () -> new CurrencyNotFoundException(String.format("Currency with code %s not found", code)));
-        } else {
-            throw new InvalidParameterException("currency code must consist of 3 latin letters");
-        }
+        return exchangerDao.get(code).orElseThrow(
+                () -> new CurrencyNotFoundException(String.format(ExceptionMessage.FORMATTED_CUR_NOT_FOUND, code)));
     }
 
     public Currency save(Currency currency) {
-        if (isValidCurrency(currency)) {
-            if (exchangerDao.get(currency.getCode()).isPresent()) {
-                throw new CurrencyAlreadyExistException(
-                        String.format("Currency with code %s already exist", currency.getCode()));
-            }
-            return exchangerDao.save(currency);
-        } else {
-            throw new InvalidParameterException("Currency is not valid");
+        if (exchangerDao.get(currency.getCode()).isPresent()) {
+            throw new CurrencyAlreadyExistException(
+                    String.format(ExceptionMessage.FORMATTED_CUR_EXIST, currency.getCode()));
         }
+        return exchangerDao.save(currency);
     }
 
     public boolean isExist(String code) {
-        if (isValidString(CUR_CODE_PATTERN, code)) {
-            return exchangerDao.isExist(code);
-        } else {
-            throw new InvalidParameterException("currency code must consist of 3 latin letters");
-        }
+        return exchangerDao.isExist(code);
+
     }
 
 }
