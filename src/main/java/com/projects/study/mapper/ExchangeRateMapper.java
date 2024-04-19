@@ -62,7 +62,7 @@ public class ExchangeRateMapper implements ExchangerMapper<ExchangeRate> {
         Currency targetCur = currencyService.get(targetCurCode);
         newExchangeRate.setBaseCurrency(baseCur);
         newExchangeRate.setTargetCurrency(targetCur);
-        newExchangeRate.setRate(new BigDecimal(rate));
+        newExchangeRate.setRate(new BigDecimal(rate.replace(",",".")));
         return newExchangeRate;
     }
 

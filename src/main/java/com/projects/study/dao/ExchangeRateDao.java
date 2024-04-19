@@ -69,7 +69,7 @@ public class ExchangeRateDao implements ExchangerDao<ExchangeRate> {
             pStmt.setDouble(3, exchangeRate.getRate().doubleValue());
             pStmt.execute();
             ResultSet resultSet = pStmt.getGeneratedKeys();
-            exchangeRate.setId(resultSet.getLong(1));
+            exchangeRate.setId(resultSet.getLong(ID));
             return exchangeRate;
         } catch(SQLException e) {
             throw new RuntimeException(e);

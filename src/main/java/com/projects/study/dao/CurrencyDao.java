@@ -59,7 +59,7 @@ public class CurrencyDao implements ExchangerDao<Currency> {
             pStmt.setString(3, currency.getSign());
             pStmt.execute();
             ResultSet resultSet = pStmt.getGeneratedKeys();
-            currency.setId(resultSet.getLong(1));
+            currency.setId(resultSet.getLong(ID));
             return currency;
         } catch(SQLException e) {
             throw new RuntimeException(e);
