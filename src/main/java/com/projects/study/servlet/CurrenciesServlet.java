@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static com.projects.study.constant.ValidatorKit.*;
-import static com.projects.study.util.ControllerUtils.*;
+import static com.projects.study.util.ServletUtils.*;
 
 
 @WebServlet("/currencies")

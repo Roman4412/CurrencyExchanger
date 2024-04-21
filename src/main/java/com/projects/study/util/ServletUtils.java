@@ -8,15 +8,21 @@ import com.projects.study.exception.InvalidParameterException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 
-public final class ControllerUtils {
+public final class ServletUtils {
+    private static final String DELIMITER = "=";
 
-    private ControllerUtils() {
+    private ServletUtils() {
     }
 
     public static String convertToJson(Object value) {
@@ -70,6 +76,22 @@ public final class ControllerUtils {
             BigDecimal decimal = new BigDecimal(s.replace(",", "."));
             return decimal.compareTo(min) >= 0;
         }
+    }
+
+    public static String getParamFromBody(HttpServletRequest request, String name) {
+        Map<String, String> params = new HashMap<>();
+
+        try(BufferedReader reader = request.getReader()) {
+            List<String> strings = reader.lines().toList();
+            for(String s : strings) {
+                String[] split = s.split(DELIMITER);
+                params.put(split[0], split[1]);
+            }
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return params.get(name);
     }
 
 }

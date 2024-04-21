@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import static com.projects.study.constant.ValidatorKit.*;
-import static com.projects.study.util.ControllerUtils.*;
+import static com.projects.study.util.ServletUtils.*;
 
 
 @WebServlet("/currency/*")

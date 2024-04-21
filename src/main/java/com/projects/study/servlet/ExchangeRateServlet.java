@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 
 import static com.projects.study.constant.ValidatorKit.*;
-import static com.projects.study.util.ControllerUtils.*;
+import static com.projects.study.util.ServletUtils.*;
 
 
 @WebServlet("/exchangeRate/*")
@@ -26,13 +26,11 @@ public class ExchangeRateServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         String code = parsePathVar(req);
-        String rate = req.getParameter(RequestParams.ER_RATE);
+        String rate = getParamFromBody(req, RequestParams.ER_RATE);
         if (!isValidString(ER_CODE_REGEX, code)) {
             throw new InvalidParameterException(ExceptionMessage.INVALID_ER_CODE);
         } else if (!isValidDecimalInString(rate, ER_MIN_RATE, ER_RATE_REGEX)) {
-            throw new InvalidParameterException(
-                    String.format(ExceptionMessage.FORMATTED_INVALID_RATE,
-                            ER_MIN_RATE));
+            throw new InvalidParameterException(String.format(ExceptionMessage.FORMATTED_INVALID_RATE, ER_MIN_RATE));
         } else {
             ExchangeRate updatedRate = exchangeRateService.update(code, new BigDecimal(rate));
             sendResponse(convertToJson(updatedRate), resp);
