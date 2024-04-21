@@ -3,7 +3,6 @@ package com.projects.study.service;
 import com.projects.study.constant.ExceptionMessage;
 import com.projects.study.dao.ExchangerDao;
 import com.projects.study.entity.Currency;
-import com.projects.study.exception.CurrencyAlreadyExistException;
 import com.projects.study.exception.CurrencyNotFoundException;
 
 import java.util.List;
@@ -31,7 +30,6 @@ public class CurrencyService {
 
     public boolean isExist(String code) {
         return exchangerDao.isExist(code);
-
     }
 
 }

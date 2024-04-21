@@ -72,6 +72,7 @@ public final class DaoKit {
     public static final String RATES_TARGET_CUR_NAME = "target_name";
     public static final String RATES_TARGET_CUR_SIGN = "target_sign";
     public static final String RATES_RATE = "rate";
+
     public static final int CONSTRAINT_ERR_CODE = 19;
 
     private DaoKit() {

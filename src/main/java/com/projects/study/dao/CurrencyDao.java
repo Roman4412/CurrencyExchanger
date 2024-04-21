@@ -27,7 +27,7 @@ public class CurrencyDao implements ExchangerDao<Currency> {
 
     @Override
     public Optional<Currency> get(String code) {
-        try(Connection connection = ExchangerDbConnectionProvider.get();
+        try(Connection connection = ConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_CODE)) {
             pStmt.setString(1, code);
             ResultSet resultSet = pStmt.executeQuery();
@@ -40,7 +40,7 @@ public class CurrencyDao implements ExchangerDao<Currency> {
     @Override
     public Stream<Currency> getAll() {
         Stream.Builder<Currency> currencies = Stream.builder();
-        try(Connection connection = ExchangerDbConnectionProvider.get();
+        try(Connection connection = ConnectionProvider.get();
             Statement stmt = connection.createStatement();
             ResultSet resultSet = stmt.executeQuery(CUR_GET_ALL)) {
             while(resultSet.next()) {
@@ -54,7 +54,7 @@ public class CurrencyDao implements ExchangerDao<Currency> {
 
     @Override
     public Currency save(Currency currency) {
-        try(Connection connection = ExchangerDbConnectionProvider.get();
+        try(Connection connection = ConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(CUR_SAVE)) {
             pStmt.setString(1, currency.getCode());
             pStmt.setString(2, currency.getFullName());
@@ -79,7 +79,7 @@ public class CurrencyDao implements ExchangerDao<Currency> {
 
     @Override
     public boolean isExist(String code) {
-        try(Connection connection = ExchangerDbConnectionProvider.get();
+        try(Connection connection = ConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(CUR_GET_BY_CODE)) {
             pStmt.setString(1, code);
             return pStmt.executeQuery().next();
