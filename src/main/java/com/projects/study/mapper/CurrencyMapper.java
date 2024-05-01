@@ -10,7 +10,6 @@ import java.util.Map;
 import static com.projects.study.constant.DaoKit.*;
 
 public class CurrencyMapper implements ExchangerMapper<Currency> {
-
     @Override
     public Currency toEntity(ResultSet resultSet) {
         try {
