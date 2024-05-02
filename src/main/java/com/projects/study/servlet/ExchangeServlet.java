@@ -25,11 +25,11 @@ import static com.projects.study.util.ServletUtils.*;
 
 @WebServlet("/exchange")
 public class ExchangeServlet extends HttpServlet {
-    ExchangerDao<ExchangeRate> exchangeRateDao = ExchangeRateDao.getInstance();
-    ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateDao);
-    ExchangerDao<Currency> currencyDao = CurrencyDao.getInstance();
-    CurrencyService currencyService = new CurrencyService(currencyDao);
-    ExchangeService exchangeService = new ExchangeService(exchangeRateService, currencyService);
+    private final ExchangerDao<ExchangeRate> exchangeRateDao = ExchangeRateDao.getInstance();
+    private final ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateDao);
+    private final ExchangerDao<Currency> currencyDao = CurrencyDao.getInstance();
+    private final CurrencyService currencyService = new CurrencyService(currencyDao);
+    private final ExchangeService exchangeService = new ExchangeService(exchangeRateService, currencyService);
 
 
     @Override
@@ -45,11 +45,7 @@ public class ExchangeServlet extends HttpServlet {
                     String.format(ExceptionMessage.FORMATTED_INVALID_AMOUNT, EX_MIN_AMOUNT));
         } else {
             BigDecimal amountDec = new BigDecimal(amount.replace(",", "."));
-            BigDecimal converted = exchangeService.exchange(from, to, amountDec);
-            ExchangeResponse response = new ExchangeResponse();
-            response.setExchangeRate(exchangeRateService.get(from + to));
-            response.setAmount(amountDec);
-            response.setConvertedAmount(converted);
+            ExchangeResponse response = exchangeService.exchange(from, to, amountDec);
             sendResponse(convertToJson(response), resp);
         }
     }

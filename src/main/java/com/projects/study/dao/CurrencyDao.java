@@ -57,7 +57,7 @@ public class CurrencyDao implements ExchangerDao<Currency> {
         try(Connection connection = ConnectionProvider.get();
             PreparedStatement pStmt = connection.prepareStatement(CUR_SAVE)) {
             pStmt.setString(1, currency.getCode());
-            pStmt.setString(2, currency.getFullName());
+            pStmt.setString(2, currency.getName());
             pStmt.setString(3, currency.getSign());
             pStmt.execute();
             ResultSet resultSet = pStmt.getGeneratedKeys();

@@ -1,6 +1,7 @@
 package com.projects.study.service;
 
 import com.projects.study.constant.ExceptionMessage;
+import com.projects.study.dto.ExchangeResponse;
 import com.projects.study.entity.ExchangeRate;
 import com.projects.study.exception.ExchangeRateNotFoundException;
 
@@ -13,56 +14,65 @@ public class ExchangeService {
     public static final int RATE_SCALE = 4;
     public static final int AMOUNT_SCALE = 2;
 
-    ExchangeRateService exRateService;
+    ExchangeRateService exchangeRateService;
     CurrencyService currencyService;
 
-    public ExchangeService(ExchangeRateService exRateService, CurrencyService currencyService) {
-        this.exRateService = exRateService;
+    public ExchangeService(ExchangeRateService exchangeRateService, CurrencyService currencyService) {
+        this.exchangeRateService = exchangeRateService;
         this.currencyService = currencyService;
     }
 
-    public BigDecimal exchange(String from, String to, BigDecimal amount) {
-        BigDecimal convertedAmount;
-        String directExCode = from + to;
-        String reverseExCode = to + from;
-        String defaultBaseCode = DEFAULT_CUR_CODE + from;
-        String defaultTargetCode = DEFAULT_CUR_CODE + to;
 
-        if (exRateService.isExist(directExCode)) {
-            BigDecimal rate = exRateService.get(directExCode).getRate();
+    public ExchangeResponse exchange(String from, String to, BigDecimal amount) {
+        ExchangeResponse response = new ExchangeResponse();
+        BigDecimal convertedAmount;
+        ExchangeRate exchangeRate;
+
+        BigDecimal rate;
+        String directRateCode = from + to;
+        String reverseRateCode = to + from;
+        String usdBaseRateCode = DEFAULT_CUR_CODE + from;
+        String usdTargetRateCode = DEFAULT_CUR_CODE + to;
+
+        if (exchangeRateService.isExist(directRateCode)) {
+            exchangeRate = exchangeRateService.get(directRateCode);
+            convertedAmount = amount.multiply(exchangeRate.getRate());
+        } else if (exchangeRateService.isExist(reverseRateCode)) {
+            rate = calculateReverseRate(reverseRateCode);
             convertedAmount = amount.multiply(rate);
-        } else if (exRateService.isExist(reverseExCode)) {
-            BigDecimal reverseRate = calculateReverseRate(reverseExCode);
-            convertedAmount = amount.multiply(reverseRate);
-            saveExchangeRate(from, to, reverseRate);
-        } else if (exRateService.isExist(defaultBaseCode) && exRateService.isExist(defaultTargetCode)) {
-            BigDecimal crossRate = calculateCrossRate(defaultBaseCode, defaultTargetCode);
-            convertedAmount = amount.multiply(crossRate);
-            saveExchangeRate(from, to, crossRate);
+            exchangeRate = saveExchangeRate(from, to, rate);
+        } else if (exchangeRateService.isExist(usdBaseRateCode) && exchangeRateService.isExist(usdTargetRateCode)) {
+            rate = calculateCrossRate(usdBaseRateCode, usdTargetRateCode);
+            convertedAmount = amount.multiply(rate);
+            exchangeRate = saveExchangeRate(from, to, rate);
         } else {
             throw new ExchangeRateNotFoundException(ExceptionMessage.EX_CANT_EXCHANGE);
         }
-        return convertedAmount.setScale(AMOUNT_SCALE, RoundingMode.HALF_EVEN);
+
+        response.setExchangeRate(exchangeRate);
+        response.setAmount(amount);
+        response.setConvertedAmount(convertedAmount.setScale(AMOUNT_SCALE, RoundingMode.HALF_EVEN));
+
+        return response;
     }
 
     private BigDecimal calculateReverseRate(String code) {
-        BigDecimal rate = exRateService.get(code).getRate();
+        BigDecimal rate = exchangeRateService.get(code).getRate();
         return BigDecimal.ONE.divide(rate, RATE_SCALE, RoundingMode.HALF_EVEN);
-
     }
 
     private BigDecimal calculateCrossRate(String defBaseCode, String defTargetCode) {
-        BigDecimal defBaseRate = exRateService.get(defBaseCode).getRate();
-        BigDecimal defTargetRate = exRateService.get(defTargetCode).getRate();
+        BigDecimal defBaseRate = exchangeRateService.get(defBaseCode).getRate();
+        BigDecimal defTargetRate = exchangeRateService.get(defTargetCode).getRate();
         return defBaseRate.divide(defTargetRate, RATE_SCALE, RoundingMode.HALF_EVEN);
     }
 
-    private void saveExchangeRate(String base, String target, BigDecimal rate) {
+    private ExchangeRate saveExchangeRate(String base, String target, BigDecimal rate) {
         ExchangeRate newExchangeRate = new ExchangeRate();
         newExchangeRate.setBaseCurrency(currencyService.get(base));
         newExchangeRate.setTargetCurrency(currencyService.get(target));
         newExchangeRate.setRate(rate);
-        exRateService.save(newExchangeRate);
+        return exchangeRateService.save(newExchangeRate);
     }
 
 }

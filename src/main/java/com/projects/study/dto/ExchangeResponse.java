@@ -9,9 +9,6 @@ public class ExchangeResponse {
     BigDecimal amount;
     BigDecimal convertedAmount;
 
-    public ExchangeResponse() {
-    }
-
     public void setExchangeRate(ExchangeRate exchangeRate) {
         this.exchangeRate = exchangeRate;
     }

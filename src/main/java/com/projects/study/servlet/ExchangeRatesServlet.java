@@ -25,11 +25,11 @@ import static com.projects.study.util.ServletUtils.*;
 
 @WebServlet("/exchangeRates")
 public class ExchangeRatesServlet extends HttpServlet {
-    ExchangerDao<ExchangeRate> exchangeRateExchangerDao = ExchangeRateDao.getInstance();
-    ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateExchangerDao);
-    ExchangerDao<Currency> currencyDao = CurrencyDao.getInstance();
-    CurrencyService currencyService = new CurrencyService(currencyDao);
-    ExchangerMapper<ExchangeRate> mapper = new ExchangeRateMapper(currencyService);
+    private final ExchangerDao<ExchangeRate> exchangeRateExchangerDao = ExchangeRateDao.getInstance();
+    private final ExchangeRateService exchangeRateService = new ExchangeRateService(exchangeRateExchangerDao);
+    private final ExchangerDao<Currency> currencyDao = CurrencyDao.getInstance();
+    private final CurrencyService currencyService = new CurrencyService(currencyDao);
+    private final ExchangerMapper<ExchangeRate> mapper = new ExchangeRateMapper(currencyService);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {

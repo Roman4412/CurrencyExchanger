@@ -17,7 +17,7 @@ public class CurrencyMapper implements ExchangerMapper<Currency> {
                 Currency currency = new Currency();
                 currency.setId(resultSet.getLong(ID));
                 currency.setCode(resultSet.getString(CUR_CODE));
-                currency.setFullName(resultSet.getString(CUR_NAME));
+                currency.setName(resultSet.getString(CUR_NAME));
                 currency.setSign(resultSet.getString(CUR_SIGN));
                 return currency;
             } else {
@@ -36,7 +36,7 @@ public class CurrencyMapper implements ExchangerMapper<Currency> {
 
         Currency currency = new Currency();
         currency.setCode(code);
-        currency.setFullName(name);
+        currency.setName(name);
         currency.setSign(sign);
         return currency;
     }

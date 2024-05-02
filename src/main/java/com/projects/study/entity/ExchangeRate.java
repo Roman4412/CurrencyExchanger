@@ -8,9 +8,6 @@ public class ExchangeRate {
     private Currency targetCurrency;
     private BigDecimal rate;
 
-    public ExchangeRate() {
-    }
-
     public long getId() {
         return id;
     }

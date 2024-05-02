@@ -3,18 +3,15 @@ package com.projects.study.entity;
 public class Currency {
     private long id;
     private String code;
-    private String fullName;
+    private String name;
     private String sign;
-
-    public Currency() {
-    }
 
     public String getCode() {
         return code;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getName() {
+        return name;
     }
 
     public void setId(long id) {
@@ -29,8 +26,8 @@ public class Currency {
         this.code = code;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setSign(String sign) {
@@ -39,7 +36,7 @@ public class Currency {
 
     @Override
     public String toString() {
-        return "Currency{" + "id=" + id + ", code='" + code + '\'' + ", fullName='" + fullName + '\'' + ", sign='" + sign + '\'' + '}';
+        return "Currency{" + "id=" + id + ", code='" + code + '\'' + ", name='" + name + '\'' + ", sign='" + sign + '\'' + '}';
     }
 
 }

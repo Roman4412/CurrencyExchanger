@@ -30,12 +30,12 @@ public class ExchangeRateMapper implements ExchangerMapper<ExchangeRate> {
 
                 bCurrency.setId(resultSet.getLong(RATES_BASE_CUR_ID));
                 bCurrency.setCode(resultSet.getString(RATES_BASE_CUR_CODE));
-                bCurrency.setFullName(resultSet.getString(RATES_BASE_CUR_NAME));
+                bCurrency.setName(resultSet.getString(RATES_BASE_CUR_NAME));
                 bCurrency.setSign(resultSet.getString(RATES_BASE_CUR_SIGN));
 
                 tCurrency.setId(resultSet.getLong(RATES_TARGET_CUR_ID));
                 tCurrency.setCode(resultSet.getString(RATES_TARGET_CUR_CODE));
-                tCurrency.setFullName(resultSet.getString(RATES_TARGET_CUR_NAME));
+                tCurrency.setName(resultSet.getString(RATES_TARGET_CUR_NAME));
                 tCurrency.setSign(resultSet.getString(RATES_TARGET_CUR_SIGN));
 
                 rate.setId(resultSet.getLong(ID));
