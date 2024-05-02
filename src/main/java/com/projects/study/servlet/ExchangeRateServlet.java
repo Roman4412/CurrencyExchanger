@@ -32,10 +32,9 @@ public class ExchangeRateServlet extends HttpServlet {
         } else if (!isValidDecimalInString(rate, ER_MIN_RATE, ER_RATE_REGEX)) {
             throw new InvalidParameterException(String.format(ExceptionMessage.FORMATTED_INVALID_RATE, ER_MIN_RATE));
         } else {
-            ExchangeRate updatedRate = exchangeRateService.update(code, new BigDecimal(rate));
+            ExchangeRate updatedRate = exchangeRateService.update(code, new BigDecimal(rate.replace(",", ".")));
             sendResponse(convertToJson(updatedRate), resp);
         }
-
     }
 
     @Override
