@@ -64,10 +64,6 @@ public final class ServletUtils {
         return true;
     }
 
-    public static boolean isValidString(String pattern, String s) {
-        return Pattern.matches(pattern, s);
-    }
-
     public static boolean isValidDecimalInString(String s, BigDecimal min, String pattern) {
         if (!isValidString(pattern, s)) {
             return false;
