@@ -4,12 +4,12 @@ Currency Exchanger API allows you to quickly and easily perform conversions betw
 as well as manage the list of available currencies and exchange rates.
 ## Technologies and tools
  - Java 17
+ - Maven
  - JDBC
- - Jakarta Servlet API
  - HikariCP
  - SQLite
  - Jackson
- - Maven
+ - Jakarta Servlet API
  - Tomcat
 ## Available endpoints
 ### Currency
@@ -157,9 +157,3 @@ as well as manage the list of available currencies and exchange rates.
     "convertedAmount": 320184.00
 }
 ```
-### Response Codes
-- 200: successful request
-- 400: invalid request parameters
-- 404: resource not found
-- 409: resource already exists
-- 500: internal server error
