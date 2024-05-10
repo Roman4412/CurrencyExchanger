@@ -12,17 +12,17 @@ import java.util.stream.Stream;
 import static com.projects.study.constant.DaoKit.*;
 
 public class CurrencyDao implements ExchangerDao<Currency> {
-    private static CurrencyDao currencyDAO;
+    private static CurrencyDao currencyDao;
     private static final CurrencyMapper mapper = new CurrencyMapper();
 
     private CurrencyDao() {
     }
 
     public static CurrencyDao getInstance() {
-        if (currencyDAO == null) {
-            currencyDAO = new CurrencyDao();
+        if (currencyDao == null) {
+            currencyDao = new CurrencyDao();
         }
-        return currencyDAO;
+        return currencyDao;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class CurrencyDao implements ExchangerDao<Currency> {
         } catch(SQLException e) {
             if (e.getErrorCode() == CONSTRAINT_ERR_CODE) {
                 throw new CurrencyAlreadyExistException(
-                        String.format(ExceptionMessage.FORMATTED_CUR_EXIST, currency.getCode()));
+                        String.format(ExceptionMessage.CUR_EXIST_FORMATTED, currency.getCode()));
             }
             throw new RuntimeException(e);
         }

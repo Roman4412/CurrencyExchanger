@@ -28,18 +28,18 @@ public class ExchangeRateMapper implements ExchangerMapper<ExchangeRate> {
                 Currency tCurrency = new Currency();
                 ExchangeRate rate = new ExchangeRate();
 
-                bCurrency.setId(resultSet.getLong(RATES_BASE_CUR_ID));
-                bCurrency.setCode(resultSet.getString(RATES_BASE_CUR_CODE));
-                bCurrency.setName(resultSet.getString(RATES_BASE_CUR_NAME));
-                bCurrency.setSign(resultSet.getString(RATES_BASE_CUR_SIGN));
+                bCurrency.setId(resultSet.getLong(ER_BASE_CUR_ID));
+                bCurrency.setCode(resultSet.getString(ER_BASE_CUR_CODE));
+                bCurrency.setName(resultSet.getString(ER_BASE_CUR_NAME));
+                bCurrency.setSign(resultSet.getString(ER_BASE_CUR_SIGN));
 
-                tCurrency.setId(resultSet.getLong(RATES_TARGET_CUR_ID));
-                tCurrency.setCode(resultSet.getString(RATES_TARGET_CUR_CODE));
-                tCurrency.setName(resultSet.getString(RATES_TARGET_CUR_NAME));
-                tCurrency.setSign(resultSet.getString(RATES_TARGET_CUR_SIGN));
+                tCurrency.setId(resultSet.getLong(ER_TARGET_CUR_ID));
+                tCurrency.setCode(resultSet.getString(ER_TARGET_CUR_CODE));
+                tCurrency.setName(resultSet.getString(ER_TARGET_CUR_NAME));
+                tCurrency.setSign(resultSet.getString(ER_TARGET_CUR_SIGN));
 
                 rate.setId(resultSet.getLong(ID));
-                rate.setRate(new BigDecimal(resultSet.getString(RATES_RATE)));
+                rate.setRate(new BigDecimal(resultSet.getString(ER_RATE)));
                 rate.setBaseCurrency(bCurrency);
                 rate.setTargetCurrency(tCurrency);
                 return rate;

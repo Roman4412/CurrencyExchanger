@@ -23,8 +23,8 @@ public class CurrencyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         String code = parsePathVar(req);
-        if (!isValidString(CUR_CODE_REGEX, code)) {
-            throw new InvalidParameterException(ExceptionMessage.INVALID_CURRENCY_CODE);
+        if (!isValidStringParam(CUR_CODE_REGEX, code)) {
+            throw new InvalidParameterException(ExceptionMessage.CUR_INVALID_CODE);
         } else {
             Currency currency = currencyService.get(code.trim());
             sendResponse(convertToJson(currency), resp);

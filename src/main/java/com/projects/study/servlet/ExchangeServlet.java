@@ -38,11 +38,11 @@ public class ExchangeServlet extends HttpServlet {
         String to = req.getParameter(RequestParams.EX_TO);
         String amount = req.getParameter(RequestParams.EX_AMOUNT);
 
-        if (!isValidString(CUR_CODE_REGEX, from, to)) {
-            throw new InvalidParameterException(ExceptionMessage.INVALID_CURRENCY_CODE);
-        } else if (!isValidDecimalInString(amount, EX_MIN_AMOUNT, EX_AMOUNT_REGEX)) {
+        if (!isValidStringParam(CUR_CODE_REGEX, from, to)) {
+            throw new InvalidParameterException(ExceptionMessage.CUR_INVALID_CODE);
+        } else if (!isValidDecimalParam(amount, EX_MIN_AMOUNT, EX_AMOUNT_REGEX)) {
             throw new InvalidParameterException(
-                    String.format(ExceptionMessage.FORMATTED_INVALID_AMOUNT, EX_MIN_AMOUNT));
+                    String.format(ExceptionMessage.EX_INVALID_AMOUNT_FORMATTED, EX_MIN_AMOUNT));
         } else {
             BigDecimal amountDec = new BigDecimal(amount.replace(",", "."));
             ExchangeResponse response = exchangeService.exchange(from, to, amountDec);

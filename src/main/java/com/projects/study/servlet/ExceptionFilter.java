@@ -1,4 +1,4 @@
-package com.projects.study.filter;
+package com.projects.study.servlet;
 
 import com.projects.study.exception.ExchangerExceptionHandler;
 import jakarta.servlet.*;

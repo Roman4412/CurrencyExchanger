@@ -12,6 +12,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,11 +53,11 @@ public final class ServletUtils {
 
     private static void pathVarValidate(String path) {
         if (path == null || path.substring(1).isBlank()) {
-            throw new InvalidParameterException(ExceptionMessage.MISS_CUR_CODE);
+            throw new InvalidParameterException(ExceptionMessage.CUR_MISS_CODE);
         }
     }
 
-    public static boolean isValidString(String pattern, String... strings) {
+    public static boolean isValidStringParam(String pattern, String... strings) {
         for(String s : strings) {
             if (s == null || !Pattern.matches(pattern, s)) {
                 return false;
@@ -64,8 +66,9 @@ public final class ServletUtils {
         return true;
     }
 
-    public static boolean isValidDecimalInString(String s, BigDecimal min, String pattern) {
-        if (!isValidString(pattern, s)) {
+    public static boolean isValidDecimalParam(String s, BigDecimal min, String pattern) {
+        if (!isValidStringParam(pattern, s)) {
+            System.out.println("aaa");
             return false;
         } else {
             BigDecimal decimal = new BigDecimal(s.replace(",", "."));
@@ -75,12 +78,11 @@ public final class ServletUtils {
 
     public static String getParamFromBody(HttpServletRequest request, String name) {
         Map<String, String> params = new HashMap<>();
-
         try(BufferedReader reader = request.getReader()) {
             List<String> strings = reader.lines().toList();
             for(String s : strings) {
                 String[] split = s.split(DELIMITER);
-                params.put(split[0], split[1]);
+                params.put(split[0], URLDecoder.decode(split[1], StandardCharsets.UTF_8));
             }
         } catch(IOException e) {
             throw new RuntimeException(e);

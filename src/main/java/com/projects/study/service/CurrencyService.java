@@ -21,7 +21,7 @@ public class CurrencyService {
 
     public Currency get(String code) {
         return exchangerDao.get(code).orElseThrow(
-                () -> new CurrencyNotFoundException(String.format(ExceptionMessage.FORMATTED_CUR_NOT_FOUND, code)));
+                () -> new CurrencyNotFoundException(String.format(ExceptionMessage.CUR_NOT_FOUND_FORMATTED, code)));
     }
 
     public Currency save(Currency currency) {

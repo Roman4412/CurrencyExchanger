@@ -10,12 +10,12 @@ import java.math.RoundingMode;
 
 
 public class ExchangeService {
-    public static final String DEFAULT_CUR_CODE = "USD";
-    public static final int RATE_SCALE = 4;
-    public static final int AMOUNT_SCALE = 2;
+    private static final String DEFAULT_CUR_CODE = "USD";
+    private static final int RATE_SCALE = 4;
+    private static final int AMOUNT_SCALE = 2;
 
-    ExchangeRateService exchangeRateService;
-    CurrencyService currencyService;
+    private final ExchangeRateService exchangeRateService;
+    private final CurrencyService currencyService;
 
     public ExchangeService(ExchangeRateService exchangeRateService, CurrencyService currencyService) {
         this.exchangeRateService = exchangeRateService;
