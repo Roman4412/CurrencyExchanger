@@ -37,12 +37,12 @@ public class CurrenciesServlet extends HttpServlet {
         String code = req.getParameter(RequestParams.CUR_CODE);
         String name = req.getParameter(RequestParams.CUR_NAME);
         String sign = req.getParameter(RequestParams.CUR_SIGN);
-        if (!isValidString(CUR_CODE_REGEX, code)) {
-            throw new InvalidParameterException(ExceptionMessage.INVALID_CURRENCY_CODE);
-        } else if (!isValidString(CUR_NAME_REGEX, name)) {
-            throw new InvalidParameterException(ExceptionMessage.INVALID_CURRENCY_NAME);
-        } else if (!isValidString(CUR_SIGN_REGEX, sign)) {
-            throw new InvalidParameterException(ExceptionMessage.INVALID_CURRENCY_SIGN);
+        if (!isValidStringParam(CUR_CODE_REGEX, code)) {
+            throw new InvalidParameterException(ExceptionMessage.CUR_INVALID_CODE);
+        } else if (!isValidStringParam(CUR_NAME_REGEX, name)) {
+            throw new InvalidParameterException(ExceptionMessage.CUR_INVALID_NAME);
+        } else if (!isValidStringParam(CUR_SIGN_REGEX, sign)) {
+            throw new InvalidParameterException(ExceptionMessage.CUR_INVALID_SIGN);
         } else {
             Currency currency = currencyService.save(mapper.toEntity(req.getParameterMap()));
             resp.setStatus(HttpServletResponse.SC_CREATED);

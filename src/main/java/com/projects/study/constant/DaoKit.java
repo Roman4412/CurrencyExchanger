@@ -15,7 +15,7 @@ public final class DaoKit {
             VALUES (?,?,?)
             """;
 
-    public static final String RATES_GET_ALL = """
+    public static final String ER_GET_ALL = """
             SELECT er.id,
                    er.base_currency_id AS base_id,
                    baseCurrency.code AS base_code,
@@ -30,7 +30,7 @@ public final class DaoKit {
                      JOIN currencies baseCurrency ON er.base_currency_id = baseCurrency.id
                      JOIN currencies targetCurrency ON er.target_currency_id = targetCurrency.id;
             """;
-    public static final String RATE_GET_BY_CODE = """
+    public static final String ER_GET_BY_CODE = """
             SELECT er.id,
                    er.base_currency_id AS base_id,
                    baseCurrency.code AS base_code,
@@ -46,14 +46,14 @@ public final class DaoKit {
                      JOIN currencies targetCurrency ON er.target_currency_id = targetCurrency.id
             WHERE base_code LIKE ? AND target_code LIKE ?;
             """;
-    public static final String RATE_SAVE = """
+    public static final String ER_SAVE = """
             INSERT INTO exchange_rates (base_currency_id, target_currency_id, rate)
               SELECT
                   (SELECT id FROM currencies WHERE code LIKE ?),
                   (SELECT id FROM currencies WHERE code LIKE ?),
                   ?;
             """;
-    public static final String RATE_UPDATE = """
+    public static final String ER_UPDATE = """
             UPDATE exchange_rates
             SET rate = ?
             WHERE id = ?
@@ -63,15 +63,15 @@ public final class DaoKit {
     public static final String CUR_NAME = "full_name";
     public static final String CUR_SIGN = "sign";
 
-    public static final String RATES_BASE_CUR_ID = "base_id";
-    public static final String RATES_BASE_CUR_CODE = "base_code";
-    public static final String RATES_BASE_CUR_NAME = "base_name";
-    public static final String RATES_BASE_CUR_SIGN = "base_sign";
-    public static final String RATES_TARGET_CUR_ID = "target_id";
-    public static final String RATES_TARGET_CUR_CODE = "target_code";
-    public static final String RATES_TARGET_CUR_NAME = "target_name";
-    public static final String RATES_TARGET_CUR_SIGN = "target_sign";
-    public static final String RATES_RATE = "rate";
+    public static final String ER_BASE_CUR_ID = "base_id";
+    public static final String ER_BASE_CUR_CODE = "base_code";
+    public static final String ER_BASE_CUR_NAME = "base_name";
+    public static final String ER_BASE_CUR_SIGN = "base_sign";
+    public static final String ER_TARGET_CUR_ID = "target_id";
+    public static final String ER_TARGET_CUR_CODE = "target_code";
+    public static final String ER_TARGET_CUR_NAME = "target_name";
+    public static final String ER_TARGET_CUR_SIGN = "target_sign";
+    public static final String ER_RATE = "rate";
 
     public static final int CONSTRAINT_ERR_CODE = 19;
 

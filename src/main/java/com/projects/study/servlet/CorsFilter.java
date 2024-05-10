@@ -1,4 +1,4 @@
-package com.projects.study.filter;
+package com.projects.study.servlet;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;

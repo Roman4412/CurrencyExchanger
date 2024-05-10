@@ -22,7 +22,7 @@ public class ExchangeRateService {
 
     public ExchangeRate get(String code) {
         return exchangerDao.get(code).orElseThrow(
-                () -> new ExchangeRateNotFoundException(String.format(ExceptionMessage.FORMATTED_ER_NOT_FOUND, code)));
+                () -> new ExchangeRateNotFoundException(String.format(ExceptionMessage.ER_NOT_FOUND_FORMATTED, code)));
     }
 
     public ExchangeRate save(ExchangeRate exchangeRate) {

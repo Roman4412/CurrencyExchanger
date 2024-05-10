@@ -27,10 +27,15 @@ public class ExchangeRateServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
         String code = parsePathVar(req);
         String rate = getParamFromBody(req, RequestParams.ER_RATE);
-        if (!isValidString(ER_CODE_REGEX, code)) {
-            throw new InvalidParameterException(ExceptionMessage.INVALID_ER_CODE);
-        } else if (!isValidDecimalInString(rate, ER_MIN_RATE, ER_RATE_REGEX)) {
-            throw new InvalidParameterException(String.format(ExceptionMessage.FORMATTED_INVALID_RATE, ER_MIN_RATE));
+
+        System.out.println(rate);
+        System.out.println(!isValidDecimalParam(rate, ER_MIN_RATE, ER_RATE_REGEX));
+        System.out.println(!isValidStringParam(ER_CODE_REGEX, code));
+
+        if (!isValidStringParam(ER_CODE_REGEX, code)) {
+            throw new InvalidParameterException(ExceptionMessage.ER_INVALID_CODE);
+        } else if (!isValidDecimalParam(rate, ER_MIN_RATE, ER_RATE_REGEX)) {
+            throw new InvalidParameterException(String.format(ExceptionMessage.ER_INVALID_RATE_FORMATTED, ER_MIN_RATE));
         } else {
             ExchangeRate updatedRate = exchangeRateService.update(code, new BigDecimal(rate.replace(",", ".")));
             sendResponse(convertToJson(updatedRate), resp);
@@ -40,8 +45,8 @@ public class ExchangeRateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         String code = parsePathVar(req);
-        if (!isValidString(code, ER_CODE_REGEX)) {
-            throw new InvalidParameterException(ExceptionMessage.INVALID_ER_CODE);
+        if (!isValidStringParam(ER_CODE_REGEX,code)) {
+            throw new InvalidParameterException(ExceptionMessage.ER_INVALID_CODE);
         }
         ExchangeRate rate = exchangeRateService.get(code);
         sendResponse(convertToJson(rate), resp);

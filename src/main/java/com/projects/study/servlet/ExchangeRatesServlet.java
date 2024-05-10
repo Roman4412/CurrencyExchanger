@@ -43,11 +43,11 @@ public class ExchangeRatesServlet extends HttpServlet {
         String targetCurCode = req.getParameter(RequestParams.ER_TARGET_CUR);
         String rate = req.getParameter(RequestParams.ER_RATE);
 
-        if (!isValidString(ValidatorKit.CUR_CODE_REGEX, baseCurCode, targetCurCode)) {
-            throw new InvalidParameterException(ExceptionMessage.INVALID_CURRENCY_CODE);
-        } else if (!isValidDecimalInString(rate, ValidatorKit.ER_MIN_RATE, ValidatorKit.ER_RATE_REGEX)) {
+        if (!isValidStringParam(ValidatorKit.CUR_CODE_REGEX, baseCurCode, targetCurCode)) {
+            throw new InvalidParameterException(ExceptionMessage.CUR_INVALID_CODE);
+        } else if (!isValidDecimalParam(rate, ValidatorKit.ER_MIN_RATE, ValidatorKit.ER_RATE_REGEX)) {
             throw new InvalidParameterException(
-                    String.format(ExceptionMessage.FORMATTED_INVALID_RATE, ValidatorKit.ER_MIN_RATE));
+                    String.format(ExceptionMessage.ER_INVALID_RATE_FORMATTED, ValidatorKit.ER_MIN_RATE));
         } else {
             ExchangeRate savedExchangeRate = exchangeRateService.save(mapper.toEntity(req.getParameterMap()));
             resp.setStatus(HttpServletResponse.SC_CREATED);
